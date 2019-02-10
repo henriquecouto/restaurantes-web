@@ -35,6 +35,7 @@ class App extends Component {
       if (user) {
         window.localStorage.setItem('isAuth', 1)
         this.setState({
+          authError: '',
           user
         })
       } else {
@@ -57,10 +58,9 @@ class App extends Component {
     return (
       <Fragment>
         {
-          loading ? <h1>carregando</h1> :
-            isAuth ?
-              <Home /> :
-              <Login login={this.login} authError={authError} />
+          isAuth ?
+            <Home /> :
+            <Login login={this.login} authError={authError} loading={loading} />
         }
       </Fragment>
     );

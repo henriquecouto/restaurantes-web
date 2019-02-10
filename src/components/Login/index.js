@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import {
@@ -15,6 +15,11 @@ import {
   Visibility,
   VisibilityOff,
 } from '@material-ui/icons'
+
+import {
+  LinearIndeterminate,
+  ButtonProgress
+} from '../Progress'
 
 const styles = theme => ({
   root: {
@@ -52,9 +57,7 @@ const styles = theme => ({
 class Login extends Component {
   state = {
     email: '',
-    errorEmail: '',
     password: '',
-    errorPassword: '',
     showPassword: false,
   }
 
@@ -70,12 +73,8 @@ class Login extends Component {
     })
   }
 
-  login = () => {
-    this.props.login(this.state.email)
-  }
-
   render() {
-    const { classes, authError } = this.props
+    const { classes, authError, loading } = this.props
     const { email, password, showPassword } = this.state
     const errorMessages = {
       'auth/wrong-password': 'Sua senha está incorreta, tente novamente!',
@@ -83,83 +82,88 @@ class Login extends Component {
       'auth/invalid-email': 'E-mail inválido'
     }
     return (
-      <Grid container direction='column' alignItems='center' justify='center' className={classes.root}>
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Grid container direction='column' alignItems='center' className={classes.container}>
-              <Grid item xs={12}>
-                <h1>LOGO</h1>
+      <Fragment>
+        {
+          loading && <LinearIndeterminate />
+        }
+        <Grid container direction='column' alignItems='center' justify='center' className={classes.root}>
+          <Grid item>
+            <Paper className={classes.paper}>
+              <Grid container direction='column' alignItems='center' className={classes.container}>
+                <Grid item xs={12}>
+                  <h1>LOGO</h1>
+                </Grid>
+                <Grid item xs>
+                  <Divider />
+                  <TextField
+                    id="outlined-email-input"
+                    label="Email"
+                    className={classes.textField}
+                    type="email"
+                    name="email"
+                    error={
+                      authError === 'auth/user-not-found' ||
+                      authError === 'auth/invalid-email'
+                    }
+                    value={email}
+                    autoComplete="email"
+                    margin="normal"
+                    variant="outlined"
+                    onChange={this.handleChange}
+                    helperText={
+                      (authError === 'auth/user-not-found' ||
+                        authError === 'auth/invalid-email') ?
+                        errorMessages[authError] : ''
+                    }
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    id="outlined-password-input"
+                    label="Senha"
+                    className={classes.textField}
+                    type={showPassword ? 'text' : 'password'}
+                    name='password'
+                    error={authError === 'auth/wrong-password'}
+                    value={password}
+                    autoComplete="current-password"
+                    margin="normal"
+                    variant="outlined"
+                    onChange={this.handleChange}
+                    helperText={
+                      authError === 'auth/wrong-password' ?
+                        errorMessages[authError] : ''
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="Toggle password visibility"
+                            onClick={this.handleClickShowPassword}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid container justify='space-between'>
+                  <Button className={classes.button} color='secondary'>Esqueci a senha</Button>
+                  <ButtonProgress
+                    className={classes.button}
+                    variant='contained'
+                    color='primary'
+                    onClick={() => this.props.login(email, password)}
+                    title='Entrar'
+                    loading={loading}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs>
-                <Divider />
-                <TextField
-                  id="outlined-email-input"
-                  label="Email"
-                  className={classes.textField}
-                  type="email"
-                  name="email"
-                  error={
-                    authError === 'auth/user-not-found' ||
-                    authError === 'auth/invalid-email'
-                  }
-                  value={email}
-                  autoComplete="email"
-                  margin="normal"
-                  variant="outlined"
-                  onChange={this.handleChange}
-                  helperText={
-                    (authError === 'auth/user-not-found' ||
-                      authError === 'auth/invalid-email') ?
-                      errorMessages[authError] : ''
-                  }
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  id="outlined-password-input"
-                  label="Senha"
-                  className={classes.textField}
-                  type={showPassword ? 'text' : 'password'}
-                  name='password'
-                  error={authError === 'auth/wrong-password'}
-                  value={password}
-                  autoComplete="current-password"
-                  margin="normal"
-                  variant="outlined"
-                  onChange={this.handleChange}
-                  helperText={
-                    authError === 'auth/wrong-password' ?
-                      errorMessages[authError] : ''
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="Toggle password visibility"
-                          onClick={this.handleClickShowPassword}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid container justify='space-between'>
-                <Button className={classes.button} color='secondary'>Esqueci a senha</Button>
-                <Button
-                  className={classes.button}
-                  variant='contained'
-                  color='primary'
-                  onClick={() => this.props.login(email, password)}
-                >
-                  Entrar
-                </Button>
-              </Grid>
-            </Grid>
-          </Paper>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
+      </Fragment>
     )
   }
 }
