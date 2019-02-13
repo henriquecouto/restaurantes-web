@@ -1,13 +1,10 @@
 import React, { Fragment, Component } from 'react';
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Drawer,
-  AppBar,
   CssBaseline,
-  Toolbar,
-  Typography,
-  Divider,
   List,
   ListItem,
   ListItemIcon,
@@ -15,8 +12,10 @@ import {
   Hidden,
   SwipeableDrawer
 } from '@material-ui/core';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import { 
+  ListAlt 
+} from '@material-ui/icons';
+
 
 const drawerWidth = 240;
 
@@ -46,21 +45,10 @@ class MyDrawer extends Component {
     const menu = (
       <Fragment>
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+            <ListItem button component={Link} to='/'>
+              <ListItemIcon><ListAlt /></ListItemIcon>
+              <ListItemText primary={'Pedidos'} />
             </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
         </List>
       </Fragment>
     )
