@@ -45,7 +45,7 @@ class MyDrawer extends Component {
     const menu = (
       <Fragment>
         <List>
-            <ListItem button component={Link} to='/'>
+            <ListItem button component={Link} to='/' selected={true}>
               <ListItemIcon><ListAlt /></ListItemIcon>
               <ListItemText primary={'Pedidos'} />
             </ListItem>
