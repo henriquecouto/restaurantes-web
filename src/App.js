@@ -6,7 +6,7 @@ import green from '@material-ui/core/colors/green'
 
 import Login from './components/Login'
 import Home from './components/Home'
-import NewProduct from './components/NewProduct'
+import Products from './components/Products'
 import { auth } from './firebase'
 
 import { login, isLogged } from './api'
@@ -91,10 +91,10 @@ class App extends Component {
                   <Login login={this.login} authError={authError} loading={loading} />
               )
             }} />
-            <Route exact path='/adicionar-produto' render={props => {
+            <Route exact path='/produtos' render={props => {
               return(
                 isAuth ?
-                  <NewProduct/> :
+                  <Products/> :
                   <Login login={this.login} authError={authError} loading={loading} />
               )
             }} />

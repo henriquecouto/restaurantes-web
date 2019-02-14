@@ -29,7 +29,7 @@ class Pedido extends Component {
   handleBadge = () => {
     const {itens} = this.props.pedido
     let ready = 0
-    itens.map(item => {
+    itens.forEach(item => {
       item.status !=='entregue' && ready++
     })
     return ready

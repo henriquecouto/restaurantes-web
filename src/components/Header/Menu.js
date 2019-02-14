@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { 
   ListAlt,
-  LibraryAdd,
+  ViewList,
 } from '@material-ui/icons';
 
 
@@ -40,7 +40,7 @@ const styles = theme => ({
 
 const menuItems = [
   {name: 'Pedidos', path: '/', icon: <ListAlt />},
-  {name: 'Adicionar Produto', path:'/adicionar-produto', icon: <LibraryAdd />}
+  {name: 'Produtos', path:'/produtos', icon: <ViewList />}
 ]
 
 class MyDrawer extends Component {
@@ -53,7 +53,7 @@ class MyDrawer extends Component {
         <List>
           {menuItems.map((v,k) => {
             return (
-            <ListItem button component={Link} to={v.path} selected={pathname===v.path}>
+            <ListItem button key={k} component={Link} to={v.path} selected={pathname===v.path}>
               <ListItemIcon>{v.icon}</ListItemIcon>
               <ListItemText primary={v.name} />
             </ListItem>

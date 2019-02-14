@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
 
 import Header from '../Header'
-import Pedido from './Pedido'
+import Produto from './Produto'
 
 import { loadData } from '../../api'
 
@@ -18,10 +18,10 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    await loadData('pedidos').where('finalizado', '==', false).onSnapshot(snapshot => {
+    await loadData('estoque').onSnapshot(snapshot => {
       let result = []
       snapshot.docs.forEach(doc => {
-        result.unshift({...doc.data(), id: doc.id})
+        result.unshift({...doc.data(), _id: doc.id})
       })
       this.setState({
         result
@@ -36,9 +36,9 @@ class Home extends Component {
       <Fragment>
         <Header title='Últimos Pedidos' >
           <Grid container spacing={24}>
-          {result.map((pedido, key) => 
+          {result.map((produto, key) => 
             <Grid item key={key}>
-              <Pedido pedido={pedido} />
+              <Produto produto={produto} />
             </Grid>
           )}
           </Grid>
