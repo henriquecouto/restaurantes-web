@@ -14,9 +14,10 @@ import {
   ListItemText,
   Grid
 } from '@material-ui/core';
-import { Close as CloseIcon } from '@material-ui/icons';
+import { Close as CloseIcon } from '@material-ui/icons'
 
 import Item from './Item'
+import { updateData } from '../../api'
 
 const styles = theme => ({
   appBar: {
@@ -35,8 +36,20 @@ function Transition(props) {
 }
 
 class FullScreenDialog extends React.Component {
+
+  finalize = (update) => {
+    updateData('pedidos', this.props.pedido.id, {finalizado: true})
+    this.props.onClose()
+  }
+
+  modifyItem = (update, position) => {
+    const newItens = this.props.pedido.itens
+    newItens[position] = update
+    updateData('pedidos', this.props.pedido.id, {itens: newItens})
+  }
+
   render() {
-    const { classes, open, onClose } = this.props;
+    const { classes, open, onClose, pedido } = this.props;
     return (
       <div>
         <Dialog
@@ -51,17 +64,23 @@ class FullScreenDialog extends React.Component {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" color="inherit" className={classes.flex}>
-                Mesa tal
+                Mesa {pedido.mesa}
               </Typography>
-              <Button color="inherit" onClick={onClose}>
+              <Button color="inherit" onClick={this.finalize}>
                 Finalizar Pedido
               </Button>
             </Toolbar>
           </AppBar>
           <Grid container spacing={24} className={classes.grid}>
-            <Grid item xs={12}>
-              <Item />
-            </Grid>
+          {
+            pedido.itens.map((item, key) => {
+              return (
+                <Grid item xs={12} key={key}>
+                  <Item item={item} position={key} modify={this.modifyItem}/>
+                </Grid>
+              )
+            })
+          } 
           </Grid>
         </Dialog>
       </div>

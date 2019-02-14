@@ -18,10 +18,10 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    await loadData('pedidos').onSnapshot(snapshot => {
+    await loadData('pedidos').where('finalizado', '==', false).onSnapshot(snapshot => {
       let result = []
       snapshot.docs.map(doc => {
-        result.unshift(doc.data())
+        result.unshift({...doc.data(), id: doc.id})
       })
       this.setState({
         result
@@ -31,14 +31,14 @@ class Home extends Component {
 
   render() {
     const { result } = this.state
+    
     return (
       <Fragment>
-        {console.log(result)}
         <Header title='Últimos Pedidos' >
           <Grid container spacing={24}>
           {result.map((pedido, key) => 
             <Grid item key={key}>
-              <Pedido pedido={pedido}/>
+              <Pedido pedido={pedido} />
             </Grid>
           )}
           </Grid>

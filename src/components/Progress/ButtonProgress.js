@@ -5,10 +5,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
-  wrapper: {
-    margin: theme.spacing.unit,
-    position: 'relative',
-  },
   buttonProgress: {
     position: 'absolute',
     top: '50%',
@@ -23,7 +19,7 @@ class CircularIntegration extends React.Component {
     const { classes, title, loading } = this.props;
 
     return (
-      <div className={classes.wrapper}>
+      <div>
         <Button
           variant="contained"
           color="primary"

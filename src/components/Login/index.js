@@ -148,10 +148,10 @@ class Login extends Component {
                     }}
                   />
                 </Grid>
-                <Grid container justify='space-between'>
-                  <Button className={classes.button} color='secondary'>Esqueci a senha</Button>
+
+                <Grid container direction='row' justify='space-between' alignItems='flex-start' className={classes.button}>
+                  <Button color='secondary'>Esqueci a senha</Button>
                   <ButtonProgress
-                    className={classes.button}
                     variant='contained'
                     color='primary'
                     onClick={() => this.props.login(email, password)}

@@ -2,9 +2,11 @@ import React, { Component, Fragment } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { CssBaseline } from '@material-ui/core'
+import green from '@material-ui/core/colors/green'
 
 import Login from './components/Login'
 import Home from './components/Home'
+import NewProduct from './components/NewProduct'
 import { auth } from './firebase'
 
 import { login, isLogged } from './api'
@@ -20,7 +22,8 @@ const theme = createMuiTheme({
       main: '#ff3d00',
       light: '#ff7539',
       dark: '#c30000',
-    }
+    },
+    success: green[500]
   },
   typography: {
     useNextVariants: true,
@@ -82,11 +85,17 @@ class App extends Component {
           <CssBaseline />
           <MuiThemeProvider theme={theme}>
             <Route exact path='/' render={props => {
-              return (
-
+              return(
                 isAuth ?
-                  <Home {...props} /> :
-                  <Login {...props} login={this.login} authError={authError} loading={loading} />
+                  <Home/> :
+                  <Login login={this.login} authError={authError} loading={loading} />
+              )
+            }} />
+            <Route exact path='/adicionar-produto' render={props => {
+              return(
+                isAuth ?
+                  <NewProduct/> :
+                  <Login login={this.login} authError={authError} loading={loading} />
               )
             }} />
           </MuiThemeProvider>

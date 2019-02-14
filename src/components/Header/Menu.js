@@ -13,7 +13,8 @@ import {
   SwipeableDrawer
 } from '@material-ui/core';
 import { 
-  ListAlt 
+  ListAlt,
+  LibraryAdd,
 } from '@material-ui/icons';
 
 
@@ -37,18 +38,27 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
 });
 
+const menuItems = [
+  {name: 'Pedidos', path: '/', icon: <ListAlt />},
+  {name: 'Adicionar Produto', path:'/adicionar-produto', icon: <LibraryAdd />}
+]
+
 class MyDrawer extends Component {
 
   render() {
     const { classes, children, open, toggleDrawer } = this.props
-
+    const { pathname } = window.location
     const menu = (
       <Fragment>
         <List>
-            <ListItem button component={Link} to='/' selected={true}>
-              <ListItemIcon><ListAlt /></ListItemIcon>
-              <ListItemText primary={'Pedidos'} />
+          {menuItems.map((v,k) => {
+            return (
+            <ListItem button component={Link} to={v.path} selected={pathname===v.path}>
+              <ListItemIcon>{v.icon}</ListItemIcon>
+              <ListItemText primary={v.name} />
             </ListItem>
+              ) 
+          })}
         </List>
       </Fragment>
     )
