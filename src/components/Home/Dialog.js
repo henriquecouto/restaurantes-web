@@ -38,7 +38,7 @@ function Transition(props) {
 
 class FullScreenDialog extends React.Component {
 
-  finalize = (update) => {
+  finalize = () => {
     updateData('pedidos', this.props.pedido.id, {finalizado: true})
     this.props.onClose()
   }

@@ -21,6 +21,8 @@ import {
 } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons'
 
+import { updateData } from '../../api'
+
 const styles = theme => ({
   appBar: {
     position: 'relative',
@@ -46,7 +48,7 @@ class FullScreenDialog extends React.Component {
 
   state = {
     nome: this.props.produto.nome,
-    valor: this.props.produto.val_unit,
+    val_unit: this.props.produto.val_unit,
     id: this.props.produto.id,
     disp: this.props.produto.disp
   }
@@ -57,9 +59,20 @@ class FullScreenDialog extends React.Component {
     });
   }
 
+  handleVal = event => {
+    this.setState({
+      val_unit: parseFloat(event.target.value)
+    })
+  }
+
+  save = () => {
+    updateData('estoque', this.props.produto._id, {...this.state})
+    this.props.onClose()
+  }
+
   render() {
     const { classes, open, onClose, produto, fullScreen } = this.props;
-    const { nome, valor, id, disp } = this.state;
+    const { nome, val_unit, id, disp } = this.state;
     return (
       <div>
         <Dialog
@@ -78,7 +91,7 @@ class FullScreenDialog extends React.Component {
               <Typography variant="h6" color="inherit" className={classes.flex}>
                 Editar Produto
               </Typography>
-              <Button color="inherit" onClick={this.finalize}>
+              <Button color="inherit" onClick={this.save}>
                 Salvar
               </Button>
             </Toolbar>
@@ -102,17 +115,18 @@ class FullScreenDialog extends React.Component {
                     id="outlined-number"
                     label="Valor unitário"
                     className={classes.textField}
-                    value={valor}
-                    onChange={this.handleChange('valor')}
+                    value={val_unit}
+                    onChange={this.handleVal}
                     margin="normal"
                     variant="outlined"
                     type='number'
                     InputProps={{
+                      step: '0.1',
                       startAdornment: <InputAdornment position="start">R$</InputAdornment>,
                     }}
                   />
                 </Grid>
-                <Grid item xs>
+                {/*<Grid item xs>
                   <TextField
                     id="outlined-name"
                     label="id"
@@ -122,7 +136,7 @@ class FullScreenDialog extends React.Component {
                     margin="normal"
                     variant="outlined"
                   />
-                </Grid>
+                </Grid>*/}
                 <Grid item xs>
                 {
                   (typeof produto.disp) === 'number'?
@@ -134,6 +148,7 @@ class FullScreenDialog extends React.Component {
                       onChange={this.handleChange('disp')}
                       margin="normal"
                       variant="outlined"
+                      type="number"
                     />:
                     <TextField
                       id="outlined-select-currency"
