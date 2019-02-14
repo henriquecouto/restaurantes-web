@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Card, CardHeader, Badge, IconButton, CardActions, Button, Avatar } from '@material-ui/core';
 
 import Dialog from './Dialog'
-import {loadFile} from '../../api'
+import { loadFile } from '../../api'
 
 const styles = theme => ({
   card: {
@@ -30,7 +30,7 @@ class Pedido extends Component {
     })
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     const result = await loadFile(`produtos/${this.props.produto.id}.jpg`)
     this.setState({
       image: result
@@ -38,30 +38,38 @@ class Pedido extends Component {
   }
 
   render() {
-    const { classes, produto } = this.props
-    const { openDialog, image } = this.state
+    const {classes, produto} = this.props
+    const {openDialog, image} = this.state
 
     return (
-      <Card className={classes.card}>
+      <Card className={ classes.card }>
         <CardHeader
-          avatar={
-            <Avatar>
-              <img src={image} className={classes.image}/>
-            </Avatar>
-          }
-          title={produto.nome}
-          subheader={`Disponível: ${
+          avatar={ <Avatar>
+                     <img
+                       src={ image }
+                       className={ classes.image }
+                     />
+                   </Avatar> }
+          title={ produto.nome }
+          subheader={ `Disponível: ${
             (typeof produto.disp) === 'number'? 
             produto.disp : 
             produto.disp?'Sim':'Não'
-          }`}
+          }` }
         />
         <CardActions>
-          <Button color='secondary' onClick={this.handleDialog}>
+          <Button
+            color='secondary'
+            onClick={ this.handleDialog }
+          >
             Editar
           </Button>
         </CardActions>
-        <Dialog open={openDialog} onClose={this.handleDialog}/>
+        <Dialog
+          produto={ produto }
+          open={ openDialog }
+          onClose={ this.handleDialog }
+        />
       </Card>
     )
   }

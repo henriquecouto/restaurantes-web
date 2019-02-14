@@ -12,7 +12,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Grid
+  Grid,
+  Tooltip
 } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons'
 
@@ -55,14 +56,16 @@ class FullScreenDialog extends React.Component {
         <Dialog
           fullScreen
           open={open}
-          onClose={this.handleClose}
+          onClose={onClose}
           TransitionComponent={Transition}
         >
           <AppBar className={classes.appBar}>
             <Toolbar>
-              <IconButton color="inherit" onClick={onClose} aria-label="Close">
-                <CloseIcon />
-              </IconButton>
+              <Tooltip title='Fechar' placement='bottom'>
+                <IconButton color="inherit" onClick={onClose} aria-label="Close">
+                  <CloseIcon />
+                </IconButton>
+              </Tooltip>
               <Typography variant="h6" color="inherit" className={classes.flex}>
                 Mesa {pedido.mesa}
               </Typography>

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import { Grid } from '@material-ui/core'
+import { Grid, Divider } from '@material-ui/core'
 
 import Header from '../Header'
 import Produto from './Produto'
@@ -9,7 +9,9 @@ import Produto from './Produto'
 import { loadData } from '../../api'
 
 const styles = theme => ({
-
+  grid: {
+    marginTop: theme.spacing.unit * 2
+  }
 })
 
 class Home extends Component {
@@ -21,7 +23,10 @@ class Home extends Component {
     await loadData('estoque').onSnapshot(snapshot => {
       let result = []
       snapshot.docs.forEach(doc => {
-        result.unshift({...doc.data(), _id: doc.id})
+        result.unshift({
+          ...doc.data(),
+          _id: doc.id
+        })
       })
       this.setState({
         result
@@ -30,17 +35,28 @@ class Home extends Component {
   }
 
   render() {
-    const { result } = this.state
-    
+    const {classes} = this.props
+    const {result} = this.state
+
     return (
       <Fragment>
-        <Header title='Produtos' >
-          <Grid container spacing={24}>
-          {result.map((produto, key) => 
-            <Grid item key={key}>
-              <Produto produto={produto} />
-            </Grid>
-          )}
+        <Header title='Produtos'>
+          <Divider />
+          <Grid
+            container
+            spacing={ 24 }
+            className={ classes.grid }
+          >
+            { result.map((produto, key) => {
+                return (
+                  <Grid
+                    item
+                    key={ key }
+                  >
+                    <Produto produto={ produto } />
+                  </Grid>
+                )
+              }) }
           </Grid>
         </Header>
       </Fragment>
