@@ -34,7 +34,7 @@ class Home extends Component {
     
     return (
       <Fragment>
-        <Header title='Últimos Pedidos' >
+        <Header title='Produtos' >
           <Grid container spacing={24}>
           {result.map((produto, key) => 
             <Grid item key={key}>

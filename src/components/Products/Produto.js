@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
-import { Card, CardHeader, Badge, IconButton, CardActions, Button } from '@material-ui/core';
+import { Card, CardHeader, Badge, IconButton, CardActions, Button, Avatar } from '@material-ui/core';
+
 import Dialog from './Dialog'
+import {loadFile} from '../../api'
 
 const styles = theme => ({
   card: {
@@ -11,11 +13,15 @@ const styles = theme => ({
   media: {
     height: 140,
   },
+  image: {
+    width: '100%'
+  }
 })
 class Pedido extends Component {
 
   state = {
     openDialog: false,
+    image: ''
   }
 
   handleDialog = () => {
@@ -24,13 +30,25 @@ class Pedido extends Component {
     })
   }
 
+  async componentDidMount(){
+    const result = await loadFile(`produtos/${this.props.produto.id}.jpg`)
+    this.setState({
+      image: result
+    })
+  }
+
   render() {
     const { classes, produto } = this.props
-    const { openDialog } = this.state
+    const { openDialog, image } = this.state
 
     return (
       <Card className={classes.card}>
         <CardHeader
+          avatar={
+            <Avatar>
+              <img src={image} className={classes.image}/>
+            </Avatar>
+          }
           title={produto.nome}
           subheader={`Disponível: ${
             (typeof produto.disp) === 'number'? 

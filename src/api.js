@@ -1,4 +1,4 @@
-import { auth, db } from './firebase'
+import { auth, db, storage } from './firebase'
 
 export const logout = () => {
   window.localStorage.setItem('isAuth', 0)
@@ -13,3 +13,6 @@ export const isLogged = (callback) => auth.onAuthStateChanged(callback)
 export const loadData = (collection) => db.collection(collection)
 export const updateData = (collection, idDoc, update) => db.collection(collection).doc(idDoc).update(update)
 export const createData = (collection, doc) => db.collection(collection).add(doc)
+
+//storage
+export const loadFile = (path) => storage.refFromURL(`gs://restaurante-hr.appspot.com/${path}`).getDownloadURL()
