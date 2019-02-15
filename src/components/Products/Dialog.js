@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons'
 
-import { updateData } from '../../api'
+import { updateData, createData } from '../../api'
 
 const styles = theme => ({
   appBar: {
@@ -31,12 +31,12 @@ const styles = theme => ({
     flex: 1,
   },
   grid: {
-    padding: theme.spacing.unit*2,
+    padding: theme.spacing.unit * 2,
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    minWidth: 300      
+    minWidth: 300
   },
 });
 
@@ -47,10 +47,18 @@ function Transition(props) {
 class FullScreenDialog extends React.Component {
 
   state = {
-    nome: this.props.produto.nome,
-    val_unit: this.props.produto.val_unit,
-    id: this.props.produto.id,
-    disp: this.props.produto.disp
+    nome: '',
+    val_unit: '',
+    id: '',
+    disp: '',
+  }
+
+  componentDidMount() {
+    const { produto } = this.props
+    if (produto) {
+      const { nome, val_unit, id, disp } = produto
+      this.setState({ nome, val_unit, id, disp })
+    }
   }
 
   handleChange = name => event => {
@@ -66,25 +74,34 @@ class FullScreenDialog extends React.Component {
   }
 
   save = () => {
-    updateData('estoque', this.props.produto._id, {...this.state})
+    const { produto } = this.props
+    produto ?
+      updateData('estoque', this.props.produto._id, { ...this.state }) :
+      createData('estoque',{...this.state})
     this.props.onClose()
   }
 
+  handleClose = () => {
+    const { produto, onClose } = this.props
+    this.setState({ ...produto })
+    onClose()
+  }
+
   render() {
-    const { classes, open, onClose, produto, fullScreen } = this.props;
+    const { classes, open, produto, fullScreen } = this.props;
     const { nome, val_unit, id, disp } = this.state;
     return (
       <div>
         <Dialog
           fullScreen={fullScreen}
           open={open}
-          onClose={onClose}
+          onClose={this.handleClose}
           TransitionComponent={Transition}
         >
           <AppBar className={classes.appBar}>
             <Toolbar>
               <Tooltip title='Fechar' placement='bottom'>
-                <IconButton color="inherit" onClick={onClose} aria-label="Close">
+                <IconButton color="inherit" onClick={this.handleClose} aria-label="Close">
                   <CloseIcon />
                 </IconButton>
               </Tooltip>
@@ -101,6 +118,7 @@ class FullScreenDialog extends React.Component {
               <Grid container direction='column'>
                 <Grid item xs>
                   <TextField
+                    disabled={!!produto}
                     id="outlined-name"
                     label="Nome"
                     className={classes.textField}
@@ -128,6 +146,7 @@ class FullScreenDialog extends React.Component {
                 </Grid>
                 <Grid item xs>
                   <TextField
+                    disabled={!!produto}
                     id="outlined-name"
                     label="id"
                     className={classes.textField}
@@ -138,41 +157,16 @@ class FullScreenDialog extends React.Component {
                   />
                 </Grid>
                 <Grid item xs>
-                {
-                  (typeof produto.disp) === 'number'?
-                    <TextField
-                      id="outlined-name"
-                      label="Disponibilidade"
-                      className={classes.textField}
-                      value={disp}
-                      onChange={this.handleChange('disp')}
-                      margin="normal"
-                      variant="outlined"
-                      type="number"
-                    />:
-                    <TextField
-                      id="outlined-select-currency"
-                      select
-                      label="Disponível"
-                      className={classes.textField}
-                      value={disp}
-                      onChange={this.handleChange('disp')}
-                      SelectProps={{
-                        MenuProps: {
-                          className: classes.menu,
-                        },
-                      }}
-                      margin="normal"
-                      variant="outlined"
-                    >
-                      <MenuItem value={true}>
-                        Sim
-                      </MenuItem>
-                      <MenuItem value={false}>
-                        Não
-                      </MenuItem>
-                    </TextField>
-                }
+                  <TextField
+                    id="outlined-name"
+                    label="Quantidade"
+                    className={classes.textField}
+                    value={disp}
+                    onChange={this.handleChange('disp')}
+                    margin="normal"
+                    variant="outlined"
+                    type="number"
+                  />
                 </Grid>
               </Grid>
             </Grid>

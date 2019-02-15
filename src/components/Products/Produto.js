@@ -38,37 +38,35 @@ class Pedido extends Component {
   }
 
   render() {
-    const {classes, produto} = this.props
-    const {openDialog, image} = this.state
+    const { classes, produto } = this.props
+    const { openDialog, image } = this.state
 
     return (
-      <Card className={ classes.card }>
+      <Card className={classes.card}>
         <CardHeader
-          avatar={ <Avatar>
-                     <img
-                       src={ image }
-                       className={ classes.image }
-                     />
-                   </Avatar> }
-          title={ produto.nome }
-          subheader={ `Disponível: ${
-            (typeof produto.disp) === 'number'? 
-            produto.disp : 
-            produto.disp?'Sim':'Não'
-          }` }
+          avatar={
+            <Avatar>
+              <img
+                src={image}
+                className={classes.image}
+              />
+            </Avatar>
+          }
+          title={produto.nome}
+          subheader={`Quantidade: ${produto.disp}`}
         />
         <CardActions>
           <Button
             color='secondary'
-            onClick={ this.handleDialog }
+            onClick={this.handleDialog}
           >
             Editar
           </Button>
         </CardActions>
         <Dialog
-          produto={ produto }
-          open={ openDialog }
-          onClose={ this.handleDialog }
+          produto={produto}
+          open={openDialog}
+          onClose={this.handleDialog}
         />
       </Card>
     )

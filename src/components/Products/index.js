@@ -1,22 +1,26 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import { Grid, Divider } from '@material-ui/core'
+import { Grid, Divider, IconButton, Tooltip } from '@material-ui/core'
 
 import Header from '../Header'
 import Produto from './Produto'
+import Dialog from './Dialog'
 
 import { loadData } from '../../api'
+import { AddShoppingCart } from '@material-ui/icons';
 
 const styles = theme => ({
   grid: {
-    marginTop: theme.spacing.unit * 2
-  }
+    marginTop: theme.spacing.unit * 1,
+    marginBottom: theme.spacing.unit * 1,
+  },
 })
 
 class Home extends Component {
   state = {
-    result: []
+    result: [],
+    openDialog: false
   }
 
   async componentDidMount() {
@@ -34,31 +38,46 @@ class Home extends Component {
     })
   }
 
+  handleDialog = () => {
+    this.setState({
+      openDialog: !this.state.openDialog
+    })
+  }
+
   render() {
-    const {classes} = this.props
-    const {result} = this.state
+    const { classes } = this.props
+    const { result, openDialog } = this.state
 
     return (
       <Fragment>
         <Header title='Produtos'>
+          <Grid container justify='space-between' className={classes.grid}>
+            <Tooltip title='Novo produto' placement='top'>
+              <IconButton color='secondary' onClick={this.handleDialog}><AddShoppingCart /></IconButton>
+            </Tooltip>
+          </Grid>
           <Divider />
           <Grid
             container
-            spacing={ 24 }
-            className={ classes.grid }
+            spacing={24}
+            className={classes.grid}
           >
-            { result.map((produto, key) => {
-                return (
-                  <Grid
-                    item
-                    key={ key }
-                  >
-                    <Produto produto={ produto } />
-                  </Grid>
-                )
-              }) }
+            {result.map((produto, key) => {
+              return (
+                <Grid
+                  item
+                  key={key}
+                >
+                  <Produto produto={produto} />
+                </Grid>
+              )
+            })}
           </Grid>
         </Header>
+        <Dialog
+          open={openDialog}
+          onClose={this.handleDialog}
+        />
       </Fragment>
     )
   }
