@@ -54,7 +54,7 @@ class App extends Component {
     })
   }
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
     isLogged(user => {
       if (user) {
         window.localStorage.setItem('isAuth', 1)
@@ -85,16 +85,16 @@ class App extends Component {
           <CssBaseline />
           <MuiThemeProvider theme={theme}>
             <Route exact path='/' render={props => {
-              return(
+              return (
                 isAuth ?
-                  <Home/> :
+                  <Home /> :
                   <Login login={this.login} authError={authError} loading={loading} />
               )
             }} />
             <Route exact path='/produtos' render={props => {
-              return(
+              return (
                 isAuth ?
-                  <Products/> :
+                  <Products /> :
                   <Login login={this.login} authError={authError} loading={loading} />
               )
             }} />

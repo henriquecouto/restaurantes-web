@@ -96,6 +96,7 @@ class Login extends Component {
                 <Grid item xs>
                   <Divider />
                   <TextField
+                    disabled={loading}
                     id="outlined-email-input"
                     label="Email"
                     className={classes.textField}
@@ -119,6 +120,7 @@ class Login extends Component {
                 </Grid>
                 <Grid item xs>
                   <TextField
+                    disabled={loading}
                     id="outlined-password-input"
                     label="Senha"
                     className={classes.textField}
@@ -149,7 +151,7 @@ class Login extends Component {
                   />
                 </Grid>
 
-                <Grid container direction='row' justify='space-between' alignItems='flex-start' className={classes.button}>
+                <Grid container direction='row' justify='space-between' alignItems='center' className={classes.button}>
                   <Button color='secondary'>Esqueci a senha</Button>
                   <ButtonProgress
                     variant='contained'

@@ -12,6 +12,10 @@ const styles = theme => ({
     marginTop: -12,
     marginLeft: -12,
   },
+  wrapper: {
+    margin: theme.spacing.unit,
+    position: 'relative',
+  },
 });
 
 class CircularIntegration extends React.Component {
@@ -19,7 +23,7 @@ class CircularIntegration extends React.Component {
     const { classes, title, loading } = this.props;
 
     return (
-      <div>
+      <div className={classes.wrapper}>
         <Button
           variant="contained"
           color="primary"

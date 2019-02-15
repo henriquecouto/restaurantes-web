@@ -126,7 +126,7 @@ class FullScreenDialog extends React.Component {
                     }}
                   />
                 </Grid>
-                {/*<Grid item xs>
+                <Grid item xs>
                   <TextField
                     id="outlined-name"
                     label="id"
@@ -136,7 +136,7 @@ class FullScreenDialog extends React.Component {
                     margin="normal"
                     variant="outlined"
                   />
-                </Grid>*/}
+                </Grid>
                 <Grid item xs>
                 {
                   (typeof produto.disp) === 'number'?
