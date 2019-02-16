@@ -87,15 +87,15 @@ class App extends Component {
             <Route exact path='/' render={props => {
               return (
                 isAuth ?
-                  <Home /> :
-                  <Login login={this.login} authError={authError} loading={loading} />
+                  <Home {...props} /> :
+                  <Login {...props} login={this.login} authError={authError} loading={loading} />
               )
             }} />
             <Route exact path='/produtos' render={props => {
               return (
                 isAuth ?
-                  <Products /> :
-                  <Login login={this.login} authError={authError} loading={loading} />
+                  <Products {...props} /> :
+                  <Login {...props} login={this.login} authError={authError} loading={loading} />
               )
             }} />
           </MuiThemeProvider>

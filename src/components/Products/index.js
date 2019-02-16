@@ -2,13 +2,13 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import { Grid, Divider, IconButton, Tooltip } from '@material-ui/core'
+import { AddShoppingCart } from '@material-ui/icons'
 
 import Header from '../Header'
 import Produto from './Produto'
 import Dialog from './Dialog'
 
-import { loadData } from '../../api'
-import { AddShoppingCart } from '@material-ui/icons';
+import { loadData, loadFile } from '../../api'
 
 const styles = theme => ({
   grid: {
@@ -20,22 +20,44 @@ const styles = theme => ({
 class Home extends Component {
   state = {
     result: [],
-    openDialog: false
+    openDialog: false,
+    loading: false
   }
 
+  // async componentDidMount() {
+  //   this.setState({loading:true})
+  //   await loadData('estoque').onSnapshot(snapshot => {
+  //     let result = []
+  //     snapshot.docs.forEach(doc => {
+  //       const produto = doc.data()
+  //       produto._id = doc.id
+  //       loadFile(`produtos`, `${produto.id}.jpg`)
+  //         .then(url => {
+  //           produto.image = url
+  //         })
+  //         .catch(() => null)
+  //         .finally(() => result.unshift(produto))
+  //     })
+  //     this.setState({ result })
+  //   })
+  //   this.setState({loading:false})
+
+  // }
+
   async componentDidMount() {
+    this.setState({ loading: true })
     await loadData('estoque').onSnapshot(snapshot => {
       let result = []
       snapshot.docs.forEach(doc => {
-        result.unshift({
-          ...doc.data(),
-          _id: doc.id
-        })
+        const produto = doc.data()
+        produto._uid = doc.id
+        result.unshift(produto)
       })
-      this.setState({
-        result
-      })
+      this.setState({ result })
     })
+
+
+    this.setState({ loading: false })
   }
 
   handleDialog = () => {
@@ -46,8 +68,7 @@ class Home extends Component {
 
   render() {
     const { classes } = this.props
-    const { result, openDialog } = this.state
-
+    const { result, openDialog, loading } = this.state
     return (
       <Fragment>
         <Header title='Produtos'>
@@ -62,13 +83,13 @@ class Home extends Component {
             spacing={24}
             className={classes.grid}
           >
-            {result.map((produto, key) => {
+            {loading ? <h1>Carregando...</h1> : result.map((produto, key) => {
               return (
                 <Grid
                   item
                   key={key}
                 >
-                  <Produto produto={produto} />
+                  <Produto id={produto.id} produto={produto}/>
                 </Grid>
               )
             })}

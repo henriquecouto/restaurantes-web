@@ -15,4 +15,4 @@ export const updateData = (collection, idDoc, update) => db.collection(collectio
 export const createData = (collection, doc) => db.collection(collection).add(doc)
 
 //storage
-export const loadFile = (path) => storage.refFromURL(`gs://restaurante-hr.appspot.com/${path}`).getDownloadURL()
+export const loadFile = (path, image) => storage.child(path).child(image).getDownloadURL()

@@ -47,37 +47,46 @@ function Transition(props) {
 class FullScreenDialog extends React.Component {
 
   state = {
-    nome: '',
-    val_unit: '',
-    id: '',
-    disp: '',
+    newProduto: {
+      nome: '',
+      val_unit: '',
+      id: '',
+      disp: '',
+    }
   }
 
   componentDidMount() {
     const { produto } = this.props
     if (produto) {
       const { nome, val_unit, id, disp } = produto
-      this.setState({ nome, val_unit, id, disp })
+      this.setState({ newProduto: { nome, val_unit, id, disp } })
     }
   }
 
   handleChange = name => event => {
     this.setState({
-      [name]: event.target.value,
-    });
+      newProduto: {
+        ...this.state.newProduto,
+        [name]: event.target.value,
+      }
+    })
   }
 
   handleVal = event => {
     this.setState({
-      val_unit: parseFloat(event.target.value)
+      newProduto: {
+        ...this.state.newProduto,
+        val_unit: parseFloat(event.target.value)
+      }
     })
   }
 
   save = () => {
     const { produto } = this.props
+    const { newProduto } = this.state
     produto ?
-      updateData('estoque', this.props.produto._id, { ...this.state }) :
-      createData('estoque',{...this.state})
+      updateData('estoque', produto._id, newProduto) :
+      createData('estoque', newProduto)
     this.props.onClose()
   }
 
@@ -89,7 +98,7 @@ class FullScreenDialog extends React.Component {
 
   render() {
     const { classes, open, produto, fullScreen } = this.props;
-    const { nome, val_unit, id, disp } = this.state;
+    const { nome, val_unit, id, disp } = this.state.newProduto;
     return (
       <div>
         <Dialog
