@@ -9,9 +9,6 @@ import {
   IconButton,
   Typography,
   Button,
-  List,
-  ListItem,
-  ListItemText,
   Grid,
   Tooltip
 } from '@material-ui/core';
@@ -39,6 +36,7 @@ function Transition(props) {
 class FullScreenDialog extends React.Component {
 
   finalize = () => {
+    console.log(this.props.pedido.id)
     updateData('pedidos', this.props.pedido.id, {finalizado: true})
     this.props.onClose()
   }

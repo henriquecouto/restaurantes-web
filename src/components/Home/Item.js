@@ -1,19 +1,14 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import {
-  Card,
-  CardHeader,
-  Badge,
   IconButton,
-  CardActions,
-  Button,
   CardContent,
   Typography,
   Grid,
-  Tooltip
+  Tooltip,
+  Card
 } from '@material-ui/core';
-import { NotificationsActive, RestaurantMenu, DoneAll } from '@material-ui/icons';
-import Dialog from './Dialog';
+import { RestaurantMenu, DoneAll } from '@material-ui/icons';
 
 
 const styles = theme => ({
@@ -48,7 +43,7 @@ class Pedido extends Component {
   }
 
   render() {
-    const { classes, item, position } = this.props
+    const { classes, item } = this.props
     return (
       <Card className={classes.card}>
         <CardContent>

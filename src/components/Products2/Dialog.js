@@ -9,15 +9,12 @@ import {
   IconButton,
   Typography,
   Button,
-  List,
-  ListItem,
-  ListItemText,
   Grid,
   Tooltip,
   TextField,
   withMobileDialog,
   InputAdornment,
-  MenuItem,
+  Avatar,
 } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons'
 
@@ -36,24 +33,30 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    minWidth: 300
+    minWidth: 400
   },
+  avatar: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  }
 });
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
+const INITIAL_STATE = {
+  newProduto: {
+    nome: '',
+    val_unit: '',
+    id: '',
+    disp: '',
+  }
+}
+
 class FullScreenDialog extends React.Component {
 
-  state = {
-    newProduto: {
-      nome: '',
-      val_unit: '',
-      id: '',
-      disp: '',
-    }
-  }
+  state = INITIAL_STATE
 
   componentDidMount() {
     const { produto } = this.props
@@ -87,18 +90,19 @@ class FullScreenDialog extends React.Component {
     produto ?
       updateData('estoque', produto._id, newProduto) :
       createData('estoque', newProduto)
+    this.setState(INITIAL_STATE)
     this.props.onClose()
   }
 
   handleClose = () => {
-    const { produto, onClose } = this.props
-    this.setState({ ...produto })
-    onClose()
+    this.setState(INITIAL_STATE)
+    this.props.onClose()
   }
 
   render() {
     const { classes, open, produto, fullScreen } = this.props;
     const { nome, val_unit, id, disp } = this.state.newProduto;
+    console.log(produto)
     return (
       <div>
         <Dialog
@@ -109,7 +113,7 @@ class FullScreenDialog extends React.Component {
         >
           <AppBar className={classes.appBar}>
             <Toolbar>
-              <Tooltip title='Fechar' placement='bottom'>
+              <Tooltip title='Cancelar' placement='bottom'>
                 <IconButton color="inherit" onClick={this.handleClose} aria-label="Close">
                   <CloseIcon />
                 </IconButton>
@@ -124,7 +128,18 @@ class FullScreenDialog extends React.Component {
           </AppBar>
           <Grid container className={classes.grid} alignItems='center'>
             <Grid item xs>
-              <Grid container direction='column'>
+              <Grid container direction='column' justify='center'>
+                <Grid item xs>
+                  <Avatar className={classes.avatar}>
+                    {produto && produto.image ?
+                      <img
+                        src={produto.image}
+                        className={classes.image}
+                        alt={produto.nome}
+                      /> :
+                      produto.nome.charAt(0).toUpperCase()}
+                  </Avatar>
+                </Grid>
                 <Grid item xs>
                   <TextField
                     disabled={!!produto}

@@ -16,3 +16,4 @@ export const createData = (collection, doc) => db.collection(collection).add(doc
 
 //storage
 export const loadFile = (path, image) => storage.child(path).child(image).getDownloadURL()
+// export const uploadFile = (name, file, metadata)
