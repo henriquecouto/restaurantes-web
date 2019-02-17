@@ -19,6 +19,7 @@ import {
 import { Close as CloseIcon } from '@material-ui/icons'
 
 import { updateData } from '../../../api'
+import { storage } from '../../../firebase'
 
 const styles = theme => ({
   appBar: {
@@ -37,9 +38,12 @@ const styles = theme => ({
     width: '100%',
   },
   avatar: {
-    margin: theme.spacing.unit-15,
+    margin: theme.spacing.unit - 15,
     width: 100,
     height: 100,
+  },
+  input: {
+    display: 'none',
   },
 });
 
@@ -48,10 +52,14 @@ function Transition(props) {
 }
 
 const INITIAL_STATE = {
+  progress: 0,
+  imageObj: {},
   nome: '',
   val_unit: '',
   id: '',
-  disp: ''
+  disp: '',
+  image: '',
+  _id: ''
 }
 
 class FullScreenDialog extends React.Component {
@@ -59,13 +67,40 @@ class FullScreenDialog extends React.Component {
   state = INITIAL_STATE
 
   save = () => {
-    const {nome, val_unit, id, disp} = this.state
-    updateData('estoque', this.props.produto._id, {nome, val_unit, id, disp})
-    this.props.onClose()
+    const { imageObj } = this.state
+
+    const uploadTask = storage.ref(`produtos/${imageObj.name}`).put(imageObj)
+
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        console.log('carregando')
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        this.setState({ progress });
+      },
+      (error) => {
+        console.log(error)
+      },
+      () => {
+        storage.ref('produtos').child(imageObj.name).getDownloadURL().then(url => {
+          console.log('sucesso')
+          this.setState({ image: url })
+          const { nome, val_unit, id, disp, image, _id } = this.state
+
+          updateData('estoque', _id, { nome, val_unit, id, disp, image })
+          this.props.onClose()
+        })
+      })
   }
 
   componentDidMount() {
     this.setState((state, props) => ({ ...props.produto }))
+  }
+
+  handleChangeImage = e => {
+    if (e.target.files[0]) {
+      const imageObj = e.target.files[0];
+      this.setState(() => ({ imageObj }));
+    }
   }
 
   handleChange = name => event => {
@@ -86,8 +121,8 @@ class FullScreenDialog extends React.Component {
   }
 
   render() {
-    const { classes, open, onClose, produto, fullScreen } = this.props
-    const { val_unit, disp } = this.state
+    const { classes, open, fullScreen } = this.props
+    const { val_unit, disp, image, nome } = this.state
     return (
       <div>
         <Dialog
@@ -106,7 +141,7 @@ class FullScreenDialog extends React.Component {
                 </IconButton>
               </Tooltip>
               <Typography variant="h6" color="inherit" className={classes.flex}>
-                {produto.nome}
+                {nome}
               </Typography>
               <Button color="inherit" onClick={this.save}>
                 Salvar
@@ -117,19 +152,28 @@ class FullScreenDialog extends React.Component {
             <Grid item>
               <Grid container spacing={8} justify='center' alignItems='center'>
                 <Grid item >
-                  <Tooltip title='Alterar imagem' placement='right'>
-                    <IconButton>
-                      <Avatar className={classes.avatar} >
-                        {produto.image ?
-                          <img
-                            src={produto.image}
-                            className={classes.image}
-                            alt={produto.nome}
-                          /> :
-                          produto.nome.charAt(0).toUpperCase()}
-                      </Avatar>
-                    </IconButton>
-                  </Tooltip>
+                  <input
+                    accept="image/*"
+                    className={classes.input}
+                    id="button-upload-image"
+                    type="file"
+                    onChange={this.handleChangeImage}
+                  />
+                  <label htmlFor="button-upload-image">
+                    <Tooltip title='Alterar imagem' placement='right'>
+                      <IconButton component='span'>
+                        <Avatar className={classes.avatar} >
+                          {image ?
+                            <img
+                              src={image}
+                              className={classes.image}
+                              alt={nome}
+                            /> :
+                            nome.charAt(0).toUpperCase()}
+                        </Avatar>
+                      </IconButton>
+                    </Tooltip>
+                  </label>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
