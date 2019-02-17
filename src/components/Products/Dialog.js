@@ -53,7 +53,7 @@ function Transition(props) {
 
 const INITIAL_STATE = {
   progress: 0,
-  imageObj: {},
+  imageObj: null,
   nome: '',
   val_unit: '',
   id: '',
@@ -67,28 +67,31 @@ class FullScreenDialog extends React.Component {
 
   save = () => {
     const { imageObj } = this.state
-
-    const uploadTask = storage.ref(`produtos/${imageObj.name}`).put(imageObj)
-
-    uploadTask.on('state_changed',
-      (snapshot) => {
-        console.log('carregando')
-        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-        this.setState({ progress });
-      },
-      (error) => {
-        console.log(error)
-      },
-      () => {
-        storage.ref('produtos').child(imageObj.name).getDownloadURL().then(url => {
-          console.log('sucesso')
-          this.setState({ image: url })
-          const { nome, val_unit, id, disp, image } = this.state
-
-          createData('estoque', { nome, val_unit, id, disp, image })
-          this.props.onClose()
+    if (imageObj) {
+      const uploadTask = storage.ref(`produtos/${imageObj.name}`).put(imageObj)
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          console.log('carregando')
+          const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          this.setState({ progress });
+        },
+        (error) => {
+          console.log(error)
+        },
+        () => {
+          storage.ref('produtos').child(imageObj.name).getDownloadURL().then(url => {
+            console.log('sucesso')
+            this.setState({ image: url })
+            const { nome, val_unit, id, disp, image } = this.state
+            createData('estoque', { nome, val_unit, id, disp, image })
+            this.handleClose()
+          })
         })
-      })
+    } else {
+      const { nome, val_unit, id, disp, image } = this.state
+      createData('estoque', { nome, val_unit, id, disp, image })
+      this.handleClose()
+    }
   }
 
   handleChangeImage = e => {
