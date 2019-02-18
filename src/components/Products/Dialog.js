@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons'
 
-import { createData } from '../../api'
+import { updateData, createData } from '../../api'
 import { storage } from '../../firebase'
 
 const styles = theme => ({
@@ -59,6 +59,7 @@ const INITIAL_STATE = {
   id: '',
   disp: '',
   image: '',
+  _id: '',
 }
 
 class FullScreenDialog extends React.Component {
@@ -66,38 +67,44 @@ class FullScreenDialog extends React.Component {
   state = INITIAL_STATE
 
   save = () => {
-    const { imageObj } = this.state
-    if (imageObj) {
-      const uploadTask = storage.ref(`produtos/${imageObj.name}`).put(imageObj)
-      uploadTask.on('state_changed',
-        (snapshot) => {
-          console.log('carregando')
-          const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-          this.setState({ progress });
-        },
-        (error) => {
-          console.log(error)
-        },
-        () => {
-          storage.ref('produtos').child(imageObj.name).getDownloadURL().then(url => {
-            console.log('sucesso')
-            this.setState({ image: url })
-            const { nome, val_unit, id, disp, image } = this.state
-            createData('estoque', { nome, val_unit, id, disp, image })
-            this.handleClose()
-          })
-        })
-    } else {
-      const { nome, val_unit, id, disp, image } = this.state
+    const { nome, val_unit, id, disp, image, _id } = this.state
+    this.props.produto ?
+      updateData('estoque', _id, { nome, val_unit, id, disp, image }) :
       createData('estoque', { nome, val_unit, id, disp, image })
-      this.handleClose()
-    }
+    this.props.onClose()
   }
 
-  handleChangeImage = e => {
-    if (e.target.files[0]) {
-      const imageObj = e.target.files[0];
-      this.setState(() => ({ imageObj }));
+  setImage = (imageObj) => {
+    const uploadTask = storage.ref(`produtos/${imageObj.name}`).put(imageObj)
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        console.log('carregando')
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        this.setState({ progress })
+      },
+
+      (error) => {
+        console.log(error)
+      },
+
+      () => {
+        storage.ref('produtos').child(uploadTask.blob_.data_.name).getDownloadURL().then(url => {
+          console.log('sucesso')
+          this.setState({ image: url })
+        })
+      }
+    )
+  }
+
+  componentDidMount() {
+    this.setState((state, props) => ({ ...props.produto }))
+  }
+
+  handleChangeImage = async event => {
+    if (event.target.files[0]) {
+      const imageObj = event.target.files[0]
+      await this.setState(() => ({ imageObj }))
+      this.setImage(imageObj)
     }
   }
 
@@ -114,13 +121,24 @@ class FullScreenDialog extends React.Component {
   }
 
   handleClose = () => {
-    this.setState(INITIAL_STATE)
+    this.props.produto ?
+      this.setState((state, props) => ({ ...props.produto })) :
+      this.setState(INITIAL_STATE)
     this.props.onClose()
   }
 
   render() {
-    const { classes, open, fullScreen } = this.props
+    const { classes, open, fullScreen, produto } = this.props
     const { val_unit, disp, image, nome, id } = this.state
+    const avatar = <Avatar className={classes.avatar} >
+      {image ?
+        <img
+          src={image}
+          className={classes.image}
+          alt={nome}
+        /> :
+        nome.charAt(0).toUpperCase()}
+    </Avatar>
     return (
       <div>
         <Dialog
@@ -139,7 +157,7 @@ class FullScreenDialog extends React.Component {
                 </IconButton>
               </Tooltip>
               <Typography variant="h6" color="inherit" className={classes.flex}>
-                {nome}
+                {produto ? nome : 'Adicionar Produto'}
               </Typography>
               <Button color="inherit" onClick={this.save}>
                 Salvar
@@ -149,50 +167,46 @@ class FullScreenDialog extends React.Component {
           <Grid container className={classes.grid} justify='center'>
             <Grid item>
               <Grid container spacing={8} justify='center' alignItems='center'>
-                <Grid item >
-                  <input
-                    accept="image/*"
-                    className={classes.input}
-                    id="button-upload-image"
-                    type="file"
-                    onChange={this.handleChangeImage}
-                  />
-                  <label htmlFor="button-upload-image">
-                    <Tooltip title='Alterar imagem' placement='right'>
-                      <IconButton component='span'>
-                        <Avatar className={classes.avatar} >
-                          {image ?
-                            <img
-                              src={image}
-                              className={classes.image}
-                              alt={nome}
-                            /> :
-                            nome.charAt(0).toUpperCase()}
-                        </Avatar>
-                      </IconButton>
-                    </Tooltip>
-                  </label>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Nome"
-                    className={classes.textField}
-                    value={nome}
-                    onChange={this.handleChange('nome')}
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="ID"
-                    className={classes.textField}
-                    value={id}
-                    onChange={this.handleChange('id')}
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </Grid>
+                {!produto?
+                  <>
+                    <Grid item >
+                      <input
+                        accept="image/*"
+                        className={classes.input}
+                        id="button-upload-image"
+                        type="file"
+                        onChange={this.handleChangeImage}
+                      />
+                      <label htmlFor="button-upload-image">
+                        <Tooltip title={image ? 'Alterar imagem' : 'Adicionar imagem'} placement='right'>
+                          <IconButton component='span'>
+                            {avatar}
+                          </IconButton>
+                        </Tooltip>
+                      </label>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        label="Nome"
+                        className={classes.textField}
+                        value={nome}
+                        onChange={this.handleChange('nome')}
+                        margin="normal"
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        label="ID"
+                        className={classes.textField}
+                        value={id}
+                        onChange={this.handleChange('id')}
+                        margin="normal"
+                        variant="outlined"
+                      />
+                    </Grid>
+                  </>
+                : avatar}
                 <Grid item xs={12}>
                   <TextField
                     id="outlined-number"
@@ -204,7 +218,6 @@ class FullScreenDialog extends React.Component {
                     variant="outlined"
                     type='number'
                     InputProps={{
-                      step: '0.1',
                       startAdornment: <InputAdornment position="start">R$</InputAdornment>,
                     }}
                   />

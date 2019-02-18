@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
-import { Card, CardHeader, CardActions, Button, Avatar } from '@material-ui/core';
-import Dialog from './Dialog';
+import { Card, CardHeader, CardActions, Button, Avatar } from '@material-ui/core'
+
+import Dialog from './Dialog'
 
 const styles = theme => ({
   card: {

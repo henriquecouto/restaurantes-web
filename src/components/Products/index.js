@@ -30,15 +30,16 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    await loadData('estoque').onSnapshot(snapshot => {
+    await loadData('estoque').orderBy('nome').onSnapshot(snapshot => {
       let result = []
       snapshot.docs.forEach(doc => {
-        result.unshift({ ...doc.data(), _id: doc.id })
+        result.push({ ...doc.data(), _id: doc.id })
       })
       this.setState({
         result
       })
     })
+    // const result = await loadData('estoque').orderBy('nome')
   }
 
   render() {
