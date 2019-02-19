@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 
 import Pedido from "./Pedido";
+import { CircularIndeterminate } from "../../components/Progress";
 
 import { loadData } from "../../api";
 
@@ -11,10 +12,12 @@ const styles = theme => ({});
 
 class Home extends Component {
   state = {
-    result: []
+    result: [],
+    loading: false
   };
 
   componentDidMount() {
+    this.setState({ loading: true });
     this._isMounted = true;
     loadData("pedidos")
       .where("finalizado", "==", false)
@@ -24,9 +27,7 @@ class Home extends Component {
           snapshot.docs.forEach(doc => {
             result.unshift({ ...doc.data(), id: doc.id });
           });
-          this.setState({
-            result
-          });
+          this.setState({ result, loading: false });
         }
       });
   }
@@ -36,17 +37,25 @@ class Home extends Component {
   }
 
   render() {
-    const { result } = this.state;
+    const { result, loading } = this.state;
 
     return (
       <Fragment>
-        <Grid container spacing={24}>
-          {result.map((pedido, key) => (
-            <Grid item key={key}>
-              <Pedido pedido={pedido} />
+        {loading ? (
+          <Grid container spacing={24} justify="center">
+            <Grid item>
+              <CircularIndeterminate />
             </Grid>
-          ))}
-        </Grid>
+          </Grid>
+        ) : (
+          <Grid container spacing={24}>
+            {result.map((pedido, key) => (
+              <Grid item key={key}>
+                <Pedido pedido={pedido} />
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Fragment>
     );
   }

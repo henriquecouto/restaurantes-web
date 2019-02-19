@@ -1,13 +1,14 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid, IconButton, Divider } from "@material-ui/core";
+import { PlaylistAdd } from "@material-ui/icons";
 
 import Product from "./Product";
 import Dialog from "./Dialog";
+import { CircularIndeterminate } from "../../components/Progress";
 
 import { loadData } from "../../api";
-import { PlaylistAdd } from "@material-ui/icons";
 
 const styles = theme => ({
   divider: {
@@ -19,7 +20,8 @@ const styles = theme => ({
 class Home extends Component {
   state = {
     result: [],
-    openDialog: false
+    openDialog: false,
+    loading: false
   };
 
   handleDialog = () => {
@@ -29,6 +31,7 @@ class Home extends Component {
   };
 
   componentDidMount() {
+    this.setState({ loading: true });
     this._isMounted = true;
     loadData("estoque")
       .orderBy("nome")
@@ -38,9 +41,7 @@ class Home extends Component {
           snapshot.docs.forEach(doc => {
             result.push({ ...doc.data(), _id: doc.id });
           });
-          this.setState({
-            result
-          });
+          this.setState({ result, loading: false });
         }
       });
   }
@@ -50,23 +51,33 @@ class Home extends Component {
   }
 
   render() {
-    const { result, openDialog } = this.state;
+    const { result, openDialog, loading } = this.state;
     const { classes } = this.props;
     return (
-      <Fragment>
+      <>
         <IconButton onClick={this.handleDialog}>
           <PlaylistAdd />
         </IconButton>
         <Divider className={classes.divider} />
-        <Grid container spacing={24}>
-          {result.map((produto, key) => (
-            <Grid item key={key}>
-              <Product produto={produto} />
+        {loading ? (
+          <Grid container spacing={24} justify="center">
+            <Grid item>
+              <CircularIndeterminate />
             </Grid>
-          ))}
-        </Grid>
-        <Dialog open={openDialog} onClose={this.handleDialog} />
-      </Fragment>
+          </Grid>
+        ) : (
+          <>
+            <Grid container spacing={24}>
+              {result.map((produto, key) => (
+                <Grid item key={key}>
+                  <Product produto={produto} />
+                </Grid>
+              ))}
+            </Grid>
+            <Dialog open={openDialog} onClose={this.handleDialog} />
+          </>
+        )}
+      </>
     );
   }
 }
