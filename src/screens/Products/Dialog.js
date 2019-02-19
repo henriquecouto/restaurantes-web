@@ -74,32 +74,39 @@ class FullScreenDialog extends React.Component {
   };
 
   setImage = imageObj => {
-    const uploadTask = storage.ref(`produtos/${imageObj.name}`).put(imageObj);
-    uploadTask.on(
-      "state_changed",
-      snapshot => {
-        console.log("carregando");
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+    storage
+      .ref(`produtos/${imageObj.name}`)
+      .delete()
+      .then(() => {
+        const uploadTask = storage
+          .ref(`produtos/${imageObj.name}`)
+          .put(imageObj);
+        uploadTask.on(
+          "state_changed",
+          snapshot => {
+            this.setState({ image: "C" });
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            this.setState({ progress });
+          },
+
+          error => {
+            console.log(error);
+          },
+
+          () => {
+            storage
+              .ref("produtos")
+              .child(uploadTask.blob_.data_.name)
+              .getDownloadURL()
+              .then(url => {
+                console.log("sucesso");
+                this.setState({ image: url });
+              });
+          }
         );
-        this.setState({ progress });
-      },
-
-      error => {
-        console.log(error);
-      },
-
-      () => {
-        storage
-          .ref("produtos")
-          .child(uploadTask.blob_.data_.name)
-          .getDownloadURL()
-          .then(url => {
-            console.log("sucesso");
-            this.setState({ image: url });
-          });
-      }
-    );
+      });
   };
 
   componentDidMount() {
@@ -124,9 +131,9 @@ class FullScreenDialog extends React.Component {
     });
   };
 
-  handleVal = event => {
+  handleFloat = name => event => {
     this.setState({
-      val_unit: parseFloat(event.target.value)
+      [name]: parseFloat(event.target.value)
     });
   };
 
@@ -230,7 +237,7 @@ class FullScreenDialog extends React.Component {
                     label="Valor unitário"
                     className={classes.textField}
                     value={val_unit}
-                    onChange={this.handleVal}
+                    onChange={this.handleFloat("val_unit")}
                     margin="normal"
                     variant="outlined"
                     type="number"
@@ -247,7 +254,7 @@ class FullScreenDialog extends React.Component {
                     label="Quantidade"
                     className={classes.textField}
                     value={disp}
-                    onChange={this.handleChange("disp")}
+                    onChange={this.handleFloat("disp")}
                     margin="normal"
                     variant="outlined"
                     type="number"
