@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 
-import Header from "../../components/Header";
 import Pedido from "./Pedido";
 
 import { loadData } from "../../api";
@@ -15,18 +14,25 @@ class Home extends Component {
     result: []
   };
 
-  async componentDidMount() {
-    await loadData("pedidos")
+  componentDidMount() {
+    this._isMounted = true;
+    loadData("pedidos")
       .where("finalizado", "==", false)
       .onSnapshot(snapshot => {
-        let result = [];
-        snapshot.docs.forEach(doc => {
-          result.unshift({ ...doc.data(), id: doc.id });
-        });
-        this.setState({
-          result
-        });
+        if (this._isMounted) {
+          let result = [];
+          snapshot.docs.forEach(doc => {
+            result.unshift({ ...doc.data(), id: doc.id });
+          });
+          this.setState({
+            result
+          });
+        }
       });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {

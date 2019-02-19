@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid, IconButton, Divider } from "@material-ui/core";
 
-import Header from "../../components/Header";
 import Product from "./Product";
 import Dialog from "./Dialog";
 
@@ -29,19 +28,25 @@ class Home extends Component {
     });
   };
 
-  async componentDidMount() {
-    await loadData("estoque")
+  componentDidMount() {
+    this._isMounted = true;
+    loadData("estoque")
       .orderBy("nome")
       .onSnapshot(snapshot => {
-        let result = [];
-        snapshot.docs.forEach(doc => {
-          result.push({ ...doc.data(), _id: doc.id });
-        });
-        this.setState({
-          result
-        });
+        if (this._isMounted) {
+          let result = [];
+          snapshot.docs.forEach(doc => {
+            result.push({ ...doc.data(), _id: doc.id });
+          });
+          this.setState({
+            result
+          });
+        }
       });
-    // const result = await loadData('estoque').orderBy('nome')
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
