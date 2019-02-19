@@ -19,7 +19,7 @@ import {
 import {
   LinearIndeterminate,
   ButtonProgress
-} from '../Progress'
+} from '../../components/Progress'
 
 const styles = theme => ({
   root: {
