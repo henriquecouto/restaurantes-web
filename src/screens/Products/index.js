@@ -26,11 +26,11 @@ class Home extends Component {
 
   componentDidMount() {
     this.setState({ loading: true })
-    this.isMounted = true
+    this._isMounted = true
     loadData('estoque')
       .orderBy('nome')
       .onSnapshot((snapshot) => {
-        if (this.isMounted) {
+        if (this._isMounted) {
           const result = []
           snapshot.docs.forEach((doc) => {
             result.push({ ...doc.data(), _id: doc.id })
@@ -41,7 +41,7 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
-    this.isMounted = false
+    this._isMounted = false
   }
 
   handleDialog = () => {
