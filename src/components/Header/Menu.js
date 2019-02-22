@@ -1,7 +1,7 @@
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, Component } from 'react'
 import { Link } from 'react-router-dom'
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
 import {
   Drawer,
   CssBaseline,
@@ -11,14 +11,14 @@ import {
   ListItemText,
   Hidden,
   SwipeableDrawer
-} from '@material-ui/core';
+} from '@material-ui/core'
 import { 
   ListAlt,
   ViewList,
-} from '@material-ui/icons';
+} from '@material-ui/icons'
 
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const styles = theme => ({
   root: {
@@ -36,7 +36,7 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
   },
   toolbar: theme.mixins.toolbar,
-});
+})
 
 const menuItems = [
   {name: 'Pedidos', path: '/', icon: <ListAlt />},
@@ -70,7 +70,7 @@ class MyDrawer extends Component {
             <CssBaseline />
             <Drawer
               className={classes.drawer}
-              variant="permanent"
+              variant='permanent'
               classes={{
                 paper: classes.drawerPaper,
               }}
@@ -92,7 +92,7 @@ class MyDrawer extends Component {
         >
           <div
             tabIndex={0}
-            role="button"
+            role='button'
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
           >
@@ -112,6 +112,6 @@ class MyDrawer extends Component {
 
 MyDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
-};
+}
 
-export default withStyles(styles)(MyDrawer);
+export default withStyles(styles)(MyDrawer)

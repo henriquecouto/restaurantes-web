@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
 import {
   Slide,
   Dialog,
@@ -14,139 +14,152 @@ import {
   Avatar,
   TextField,
   InputAdornment,
-  withMobileDialog
-} from "@material-ui/core";
-import { Close as CloseIcon } from "@material-ui/icons";
+  withMobileDialog,
+} from '@material-ui/core'
+import { Close as CloseIcon } from '@material-ui/icons'
 
-import { updateData, createData } from "../../api";
-import { storage } from "../../firebase";
+import { updateData, createData } from '../../api'
+import { storage } from '../../firebase'
 
 const styles = theme => ({
   appBar: {
-    position: "relative"
+    position: 'relative',
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   grid: {
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit * 2,
   },
   textField: {
-    minWidth: "100%"
+    minWidth: '100%',
   },
   image: {
-    width: "100%"
+    width: '100%',
   },
   avatar: {
     margin: theme.spacing.unit - 15,
     width: 100,
-    height: 100
+    height: 100,
   },
   input: {
-    display: "none"
-  }
-});
+    display: 'none',
+  },
+})
 
 function Transition(props) {
-  return <Slide direction="up" {...props} />;
+  return <Slide direction='up' {...props} />
 }
 
 const INITIAL_STATE = {
   progress: 0,
   imageObj: null,
-  nome: "",
-  val_unit: "",
-  id: "",
-  disp: "",
-  image: "",
-  _id: ""
-};
+  nome: '',
+  val_unit: '',
+  id: '',
+  disp: '',
+  image: '',
+  _id: '',
+}
 
 class FullScreenDialog extends React.Component {
-  state = INITIAL_STATE;
+  state = INITIAL_STATE
+
+  componentDidMount() {
+    this.setState((state, props) => ({ ...props.produto }))
+  }
+
+  componentWillReceiveProps() {
+    this.setState((state, props) => ({ ...props.produto }))
+  }
 
   save = () => {
-    const { nome, val_unit, id, disp, image, _id } = this.state;
-    this.props.produto
-      ? updateData("estoque", _id, { nome, val_unit, id, disp, image })
-      : createData("estoque", { nome, val_unit, id, disp, image });
-    this.props.onClose();
-  };
+    const {
+      nome, val_unit, id, disp, image, _id,
+    } = this.state
+    const { produto, onClose } = this.props
+    produto ? updateData('estoque', _id, {
+        nome,
+        val_unit,
+        id,
+        disp,
+        image,
+      }) : createData('estoque', {
+        nome,
+        val_unit,
+        id,
+        disp,
+        image,
+      })
+    onClose()
+  }
 
-  setImage = imageObj => {
+  setImage = (imageObj) => {
     storage
       .ref(`produtos/${imageObj.name}`)
       .delete()
       .then(() => {
-        const uploadTask = storage
-          .ref(`produtos/${imageObj.name}`)
-          .put(imageObj);
+        const uploadTask = storage.ref(`produtos/${imageObj.name}`).put(imageObj)
         uploadTask.on(
-          "state_changed",
-          snapshot => {
-            this.setState({ image: "C" });
-            const progress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            );
-            this.setState({ progress });
+          'state_changed',
+          (snapshot) => {
+            this.setState({ image: 'C' })
+            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+            this.setState({ progress })
           },
 
-          error => {
-            console.log(error);
+          (error) => {
+            console.log(error)
           },
 
           () => {
             storage
-              .ref("produtos")
+              .ref('produtos')
               .child(uploadTask.blob_.data_.name)
               .getDownloadURL()
-              .then(url => {
-                console.log("sucesso");
-                this.setState({ image: url });
-              });
-          }
-        );
-      });
-  };
-
-  componentDidMount() {
-    this.setState((state, props) => ({ ...props.produto }));
+              .then((url) => {
+                console.log('sucesso')
+                this.setState({ image: url })
+              })
+          },
+        )
+      })
   }
 
-  componentWillReceiveProps() {
-    this.setState((state, props) => ({ ...props.produto }));
-  }
-
-  handleChangeImage = async event => {
+  handleChangeImage = async (event) => {
     if (event.target.files[0]) {
-      const imageObj = event.target.files[0];
-      await this.setState(() => ({ imageObj }));
-      this.setImage(imageObj);
+      const imageObj = event.target.files[0]
+      await this.setState(() => ({ imageObj }))
+      this.setImage(imageObj)
     }
-  };
+  }
 
-  handleChange = name => event => {
+  handleChange = name => (event) => {
     this.setState({
-      [name]: event.target.value
-    });
-  };
+      [name]: event.target.value,
+    })
+  }
 
-  handleFloat = name => event => {
+  handleFloat = name => (event) => {
     this.setState({
-      [name]: parseFloat(event.target.value)
-    });
-  };
+      [name]: parseFloat(event.target.value),
+    })
+  }
 
   handleClose = () => {
     this.props.produto
       ? this.setState((state, props) => ({ ...props.produto }))
-      : this.setState(INITIAL_STATE);
-    this.props.onClose();
-  };
+      : this.setState(INITIAL_STATE)
+    this.props.onClose()
+  }
 
   render() {
-    const { classes, open, fullScreen, produto } = this.props;
-    const { val_unit, disp, image, nome, id } = this.state;
+    const {
+      classes, open, fullScreen, produto,
+    } = this.props
+    const {
+      val_unit, disp, image, nome, id,
+    } = this.state
     const avatar = (
       <Avatar className={classes.avatar}>
         {image ? (
@@ -155,76 +168,72 @@ class FullScreenDialog extends React.Component {
           nome.charAt(0).toUpperCase()
         )}
       </Avatar>
-    );
+    )
     return (
       <div>
         <Dialog
           fullScreen={fullScreen}
-          maxWidth="xs"
-          fullWidth={true}
+          maxWidth='xs'
+          fullWidth
           open={open}
           onClose={this.handleClose}
           TransitionComponent={Transition}
         >
           <AppBar className={classes.appBar}>
             <Toolbar>
-              <Tooltip title="Fechar" placement="bottom">
-                <IconButton
-                  color="inherit"
-                  onClick={this.handleClose}
-                  aria-label="Close"
-                >
+              <Tooltip title='Fechar' placement='bottom'>
+                <IconButton color='inherit' onClick={this.handleClose} aria-label='Close'>
                   <CloseIcon />
                 </IconButton>
               </Tooltip>
-              <Typography variant="h6" color="inherit" className={classes.flex}>
-                {produto ? nome : "Adicionar Produto"}
+              <Typography variant='h6' color='inherit' className={classes.flex}>
+                {produto ? nome : 'Adicionar Produto'}
               </Typography>
-              <Button color="inherit" onClick={this.save}>
+              <Button color='inherit' onClick={this.save}>
                 Salvar
               </Button>
             </Toolbar>
           </AppBar>
-          <Grid container className={classes.grid} justify="center">
+          <Grid container className={classes.grid} justify='center'>
             <Grid item>
-              <Grid container spacing={8} justify="center" alignItems="center">
+              <Grid container spacing={8} justify='center' alignItems='center'>
                 {!produto ? (
                   <>
                     <Grid item>
                       <input
-                        accept="image/*"
+                        accept='image/*'
                         className={classes.input}
-                        id="button-upload-image"
-                        type="file"
+                        id='button-upload-image'
+                        type='file'
                         onChange={this.handleChangeImage}
                       />
-                      <label htmlFor="button-upload-image">
+                      <label htmlFor='button-upload-image'>
                         <Tooltip
-                          title={image ? "Alterar imagem" : "Adicionar imagem"}
-                          placement="right"
+                          title={image ? 'Alterar imagem' : 'Adicionar imagem'}
+                          placement='right'
                         >
-                          <IconButton component="span">{avatar}</IconButton>
+                          <IconButton component='span'>{avatar}</IconButton>
                         </Tooltip>
                       </label>
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        label="Nome"
+                        label='Nome'
                         className={classes.textField}
                         value={nome}
-                        onChange={this.handleChange("nome")}
-                        margin="normal"
-                        variant="outlined"
+                        onChange={this.handleChange('nome')}
+                        margin='normal'
+                        variant='outlined'
                       />
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        label="ID"
+                        label='ID'
                         className={classes.textField}
                         value={id}
-                        onChange={this.handleChange("id")}
-                        margin="normal"
-                        variant="outlined"
+                        onChange={this.handleChange('id')}
+                        margin='normal'
+                        variant='outlined'
                       />
                     </Grid>
                   </>
@@ -233,31 +242,29 @@ class FullScreenDialog extends React.Component {
                 )}
                 <Grid item xs={12}>
                   <TextField
-                    id="outlined-number"
-                    label="Valor unitário"
+                    id='outlined-number'
+                    label='Valor unitário'
                     className={classes.textField}
                     value={val_unit}
-                    onChange={this.handleFloat("val_unit")}
-                    margin="normal"
-                    variant="outlined"
-                    type="number"
+                    onChange={this.handleFloat('val_unit')}
+                    margin='normal'
+                    variant='outlined'
+                    type='number'
                     InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">R$</InputAdornment>
-                      )
+                      startAdornment: <InputAdornment position='start'>R$</InputAdornment>,
                     }}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    id="outlined-name"
-                    label="Quantidade"
+                    id='outlined-name'
+                    label='Quantidade'
                     className={classes.textField}
                     value={disp}
-                    onChange={this.handleFloat("disp")}
-                    margin="normal"
-                    variant="outlined"
-                    type="number"
+                    onChange={this.handleFloat('disp')}
+                    margin='normal'
+                    variant='outlined'
+                    type='number'
                   />
                 </Grid>
               </Grid>
@@ -265,13 +272,13 @@ class FullScreenDialog extends React.Component {
           </Grid>
         </Dialog>
       </div>
-    );
+    )
   }
 }
 
 FullScreenDialog.propTypes = {
   classes: PropTypes.object.isRequired,
-  fullScreen: PropTypes.bool.isRequired
-};
+  fullScreen: PropTypes.bool.isRequired,
+}
 
-export default withStyles(styles)(withMobileDialog()(FullScreenDialog));
+export default withStyles(styles)(withMobileDialog()(FullScreenDialog))

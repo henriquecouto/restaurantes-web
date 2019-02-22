@@ -1,58 +1,58 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import { Grid, IconButton, Divider } from "@material-ui/core";
-import { PlaylistAdd } from "@material-ui/icons";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import { Grid, IconButton, Divider } from '@material-ui/core'
+import { PlaylistAdd } from '@material-ui/icons'
 
-import Product from "./Product";
-import Dialog from "./Dialog";
-import { CircularIndeterminate } from "../../components/Progress";
+import Product from './Product'
+import Dialog from './Dialog'
+import { CircularIndeterminate } from '../../components/Progress'
 
-import { loadData } from "../../api";
+import { loadData } from '../../api'
 
 const styles = theme => ({
   divider: {
     marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit * 2
-  }
-});
+    marginBottom: theme.spacing.unit * 2,
+  },
+})
 
 class Home extends Component {
   state = {
     result: [],
     openDialog: false,
-    loading: false
-  };
-
-  handleDialog = () => {
-    this.setState({
-      openDialog: !this.state.openDialog
-    });
-  };
+    loading: false,
+  }
 
   componentDidMount() {
-    this.setState({ loading: true });
-    this._isMounted = true;
-    loadData("estoque")
-      .orderBy("nome")
-      .onSnapshot(snapshot => {
-        if (this._isMounted) {
-          let result = [];
-          snapshot.docs.forEach(doc => {
-            result.push({ ...doc.data(), _id: doc.id });
-          });
-          this.setState({ result, loading: false });
+    this.setState({ loading: true })
+    this.isMounted = true
+    loadData('estoque')
+      .orderBy('nome')
+      .onSnapshot((snapshot) => {
+        if (this.isMounted) {
+          const result = []
+          snapshot.docs.forEach((doc) => {
+            result.push({ ...doc.data(), _id: doc.id })
+          })
+          this.setState({ result, loading: false })
         }
-      });
+      })
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
+    this.isMounted = false
+  }
+
+  handleDialog = () => {
+    this.setState(state => ({
+      openDialog: !state.openDialog,
+    }))
   }
 
   render() {
-    const { result, openDialog, loading } = this.state;
-    const { classes } = this.props;
+    const { result, openDialog, loading } = this.state
+    const { classes } = this.props
     return (
       <>
         <IconButton onClick={this.handleDialog}>
@@ -60,7 +60,7 @@ class Home extends Component {
         </IconButton>
         <Divider className={classes.divider} />
         {loading ? (
-          <Grid container spacing={24} justify="center">
+          <Grid container spacing={24} justify='center'>
             <Grid item>
               <CircularIndeterminate />
             </Grid>
@@ -68,8 +68,8 @@ class Home extends Component {
         ) : (
           <>
             <Grid container spacing={24}>
-              {result.map((produto, key) => (
-                <Grid item key={key}>
+              {result.map(produto => (
+                <Grid item key={produto.id}>
                   <Product produto={produto} />
                 </Grid>
               ))}
@@ -78,12 +78,12 @@ class Home extends Component {
           </>
         )}
       </>
-    );
+    )
   }
 }
 
 Home.propTypes = {
-  classes: PropTypes.object.isRequired
-};
+  classes: PropTypes.object.isRequired,
+}
 
-export default withStyles(styles)(Home);
+export default withStyles(styles)(Home)

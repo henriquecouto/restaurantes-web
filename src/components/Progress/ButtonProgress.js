@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Button from '@material-ui/core/Button';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Button from '@material-ui/core/Button'
 
 const styles = theme => ({
   buttonProgress: {
@@ -16,17 +16,17 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     position: 'relative',
   },
-});
+})
 
 class CircularIntegration extends React.Component {
   render() {
-    const { classes, title, loading } = this.props;
+    const { classes, title, loading } = this.props
 
     return (
       <div className={classes.wrapper}>
         <Button
-          variant="contained"
-          color="primary"
+          variant='contained'
+          color='primary'
           disabled={loading}
           onClick={this.props.onClick}
         >
@@ -34,12 +34,12 @@ class CircularIntegration extends React.Component {
         </Button>
         {loading && <CircularProgress size={24} className={classes.buttonProgress} color='secondary' />}
       </div>
-    );
+    )
   }
 }
 
 CircularIntegration.propTypes = {
   classes: PropTypes.object.isRequired,
-};
+}
 
-export default withStyles(styles)(CircularIntegration);
+export default withStyles(styles)(CircularIntegration)
