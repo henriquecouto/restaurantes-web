@@ -4,10 +4,12 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { CssBaseline } from '@material-ui/core'
 import green from '@material-ui/core/colors/green'
 
+import { auth } from './firebase'
+
 import Login from './screens/Login'
 import Home from './screens/Home'
 import Products from './screens/Products'
-import { auth } from './firebase'
+import AddProduct from './screens/AddProduct'
 
 import { login, isLogged } from './api'
 import Header from './components/Header'
@@ -90,6 +92,7 @@ class App extends Component {
               <Header title='Nome do Restaurante'>
                 <Route exact path='/' render={props => <Home {...props} />} />
                 <Route exact path='/produtos' render={props => <Products {...props} />} />
+                <Route exact path='/adicionar-produto' render={props => <AddProduct {...props} />} />
               </Header>
             )}
           </MuiThemeProvider>

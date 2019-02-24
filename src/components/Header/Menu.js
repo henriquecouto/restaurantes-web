@@ -12,9 +12,10 @@ import {
   Hidden,
   SwipeableDrawer
 } from '@material-ui/core'
-import { 
+import {
   ListAlt,
   ViewList,
+  Add,
 } from '@material-ui/icons'
 
 
@@ -39,8 +40,9 @@ const styles = theme => ({
 })
 
 const menuItems = [
-  {name: 'Pedidos', path: '/', icon: <ListAlt />},
-  {name: 'Produtos', path:'/produtos', icon: <ViewList />}
+  { name: 'Pedidos', path: '/', icon: <ListAlt /> },
+  { name: 'Produtos', path: '/produtos', icon: <ViewList /> },
+  { name: 'Novo Produto', path: '/adicionar-produto', icon: <Add /> },
 ]
 
 class MyDrawer extends Component {
@@ -51,13 +53,13 @@ class MyDrawer extends Component {
     const menu = (
       <Fragment>
         <List>
-          {menuItems.map((v,k) => {
+          {menuItems.map((v, k) => {
             return (
-            <ListItem button key={k} component={Link} to={v.path} selected={pathname===v.path}>
-              <ListItemIcon>{v.icon}</ListItemIcon>
-              <ListItemText primary={v.name} />
-            </ListItem>
-              ) 
+              <ListItem button key={k} component={Link} to={v.path} selected={pathname === v.path}>
+                <ListItemIcon>{v.icon}</ListItemIcon>
+                <ListItemText primary={v.name} />
+              </ListItem>
+            )
           })}
         </List>
       </Fragment>

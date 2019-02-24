@@ -1,21 +1,10 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import { Grid, IconButton, Divider } from '@material-ui/core'
-import { PlaylistAdd } from '@material-ui/icons'
+import { Grid } from '@material-ui/core'
 
-import Product from './Product'
-import Dialog from './Dialog'
+import Product from '../../components/Product'
 import { CircularIndeterminate } from '../../components/Progress'
 
 import { loadData } from '../../api'
-
-const styles = theme => ({
-  divider: {
-    marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit * 2,
-  },
-})
 
 class Home extends Component {
   state = {
@@ -51,14 +40,9 @@ class Home extends Component {
   }
 
   render() {
-    const { result, openDialog, loading } = this.state
-    const { classes } = this.props
+    const { result, loading } = this.state
     return (
       <>
-        <IconButton onClick={this.handleDialog}>
-          <PlaylistAdd />
-        </IconButton>
-        <Divider className={classes.divider} />
         {loading ? (
           <Grid container spacing={24} justify='center'>
             <Grid item>
@@ -66,24 +50,19 @@ class Home extends Component {
             </Grid>
           </Grid>
         ) : (
-          <>
-            <Grid container spacing={24}>
-              {result.map(produto => (
-                <Grid item key={produto.id}>
-                  <Product produto={produto} />
-                </Grid>
-              ))}
-            </Grid>
-            <Dialog open={openDialog} onClose={this.handleDialog} />
-          </>
-        )}
+            <>
+              <Grid container spacing={24}>
+                {result.map(produto => (
+                  <Grid item key={produto._id}>
+                    <Product produto={produto} />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
       </>
     )
   }
 }
 
-Home.propTypes = {
-  classes: PropTypes.object.isRequired,
-}
-
-export default withStyles(styles)(Home)
+export default Home
