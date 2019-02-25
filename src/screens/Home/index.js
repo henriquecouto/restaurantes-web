@@ -17,12 +17,12 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.setState({ loading: true })
+    this.setState({ loading: true, result: [] })
     this._isMounted = true
     loadData('pedidos')
       .where('finalizado', '==', false)
       .onSnapshot(snapshot => {
-        if (this._isMounted) {
+        if (this._isMounted && snapshot.docs[0]) {
           let result = []
           snapshot.docs.forEach(doc => {
             result.unshift({ ...doc.data(), id: doc.id })
@@ -48,14 +48,14 @@ class Home extends Component {
             </Grid>
           </Grid>
         ) : (
-          <Grid container spacing={24}>
-            {result.map((pedido, key) => (
-              <Grid item key={key}>
-                <Pedido pedido={pedido} />
-              </Grid>
-            ))}
-          </Grid>
-        )}
+            <Grid container spacing={24}>
+              {result.map((pedido, key) => (
+                <Grid item key={key}>
+                  <Pedido pedido={pedido} />
+                </Grid>
+              ))}
+            </Grid>
+          )}
       </Fragment>
     )
   }

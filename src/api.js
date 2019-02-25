@@ -1,4 +1,4 @@
-import { auth, db, storage } from './firebase'
+import { auth, db } from './firebase'
 
 export const logout = () => {
   window.localStorage.setItem('isAuth', 0)

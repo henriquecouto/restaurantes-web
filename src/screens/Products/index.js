@@ -14,12 +14,12 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.setState({ loading: true })
+    this.setState({ loading: true, result: [] })
     this._isMounted = true
     loadData('estoque')
       .orderBy('nome')
       .onSnapshot((snapshot) => {
-        if (this._isMounted) {
+        if (this._isMounted && snapshot.docs[0]) {
           const result = []
           snapshot.docs.forEach((doc) => {
             result.push({ ...doc.data(), _id: doc.id })

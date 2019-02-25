@@ -148,16 +148,6 @@ class FullScreenDialog extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    label='Nome'
-                    className={classes.textField}
-                    value={nome}
-                    onChange={this.handleChange('nome')}
-                    margin='normal'
-                    variant='outlined'
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
                     id='outlined-number'
                     label='Valor unitário'
                     className={classes.textField}

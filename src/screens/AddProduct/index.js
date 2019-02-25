@@ -1,52 +1,27 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Grid, Button, CardHeader, Typography, CardContent, Avatar, TextField, Divider, IconButton, Tooltip, InputAdornment, CardActions } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
-import { AddAPhoto, Delete, Save } from '@material-ui/icons'
+import { Grid } from '@material-ui/core'
 
 import crypto from 'crypto'
 
-import MyCard from '../../components/Card'
 import { createData } from '../../api'
 import { storage } from '../../firebase'
+import AddCard from './AddCard'
+import AddedCard from './AddedCard'
+import { CircularDeterminate } from '../../components/Progress'
 
-const styles = theme => ({
-  avatar: {
-    margin: theme.spacing.unit,
-    width: 100,
-    height: 100,
-    backgroundColor: theme.palette.primary.main
-  },
-  image: {
-    height: '100%',
-  },
-  input: {
-    display: 'none',
-  },
-  media: {
-    backgroundColor: theme.palette.secondary.light,
-  },
-  iconButton: {
-    marginRight: theme.spacing.unit
-  },
-  textField: {
-    minWidth: '100%',
-  },
-  grid: {
-    padding: theme.spacing.unit,
-  },
-})
+const INITIAL_STATE = {
+  imageFile: null,
+  imageObj: null,
+  nome: '',
+  val_unit: '',
+  disp: 10,
+  image: '',
+  progress: 0
+}
 
 class AddProduct extends Component {
 
-  state = {
-    imageFile: null,
-    imageObj: null,
-    nome: '',
-    val_unit: '',
-    disp: 10,
-    image: '',
-  }
+  state = INITIAL_STATE
 
   componentDidMount() {
     this._isMounted = true
@@ -56,7 +31,12 @@ class AddProduct extends Component {
     this._isMounted = false
   }
 
+  clear = () =>{
+    this.setState(INITIAL_STATE)
+  }
+
   save = async () => {
+    this.setState({ progress: 1 })
     const { imageObj } = this.state
     if (imageObj) {
       const [name, ext] = imageObj.name.split('.')
@@ -68,8 +48,8 @@ class AddProduct extends Component {
         .on(
           'state_changed',
           (snapshot) => {
-            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-            console.log(progress)
+            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 98) + 1
+            this.setState({ progress })
           },
 
           (error) => {
@@ -83,13 +63,14 @@ class AddProduct extends Component {
               .then((image) => {
                 const { nome, val_unit, disp } = this.state
                 createData('estoque', { nome, val_unit, disp, image })
-                console.log('sucesso')
+                this.setState({ progress: 100 })
               })
           },
         )
     } else {
       const { nome, val_unit, disp } = this.state
       createData('estoque', { nome, val_unit, disp })
+      this.setState({ progress: 100 })
     }
   }
 
@@ -111,8 +92,7 @@ class AddProduct extends Component {
   }
 
   render() {
-    const { classes } = this.props
-    const { imageFile, nome, val_unit, disp } = this.state
+    const { imageFile, nome, val_unit, disp, progress } = this.state
 
     return (
       <Grid
@@ -122,114 +102,33 @@ class AddProduct extends Component {
         direction='column'
       >
         <Grid item>
-          <MyCard type='determinateLarge'>
-            <CardHeader
-              title='Novo Produto'
-              subheader='Preencha os dados abaixo para cadastrar um produto'
-              action={
-                <Tooltip title='Adicionar'>
-                  <IconButton
-                    color='secondary'
-                    onClick={this.save}
-                  ><Save /></IconButton>
-                </Tooltip>
-              }
-            />
-            <CardContent className={classes.media}>
-              <Grid
-                container
-                spacing={24}
-                alignItems='center'
-                justify='center'
-                className={classes.grid}
-              >
-                <Grid item>
-                  <Avatar className={classes.avatar}>
-                    {
-                      imageFile ?
-                        <img alt='Imagem do produto' src={imageFile} className={classes.image} /> :
-                        'IMAGEM'
-                    }
-                  </Avatar>
-                </Grid>
-                <input
-                  id='input-image'
-                  accept='image/*'
-                  type="file"
-                  onChange={this.handleChangeImage}
-                  className={classes.input}
-                />
-                <Grid item xs>
-                  <label htmlFor='input-image'>
-                    <Button
-                      component='span'
-                      variant='outlined'
-                      color='primary'
-                      className={classes.iconButton}
-                    > <AddAPhoto className={classes.iconButton} /> Selecionar Imagem </Button>
-                  </label>
-                  {
-                    imageFile &&
-                    <Tooltip title='Remover'>
-                      <IconButton color='primary' onClick={() => this.setState({ imageFile: null })}>
-                        <Delete />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                </Grid>
-              </Grid>
-            </CardContent>
-            <CardContent>
-              <Grid
-                container
-                spacing={24}
-                alignItems='center'
-                justify='center'
-                className={classes.grid}
-              >
-                <Grid item xs={8}>
-                  <TextField
-                    variant='outlined'
-                    label='Nome do produto'
-                    value={nome}
-                    onChange={this.handleChange('nome')}
-                    className={classes.textField}
-                  />
-                </Grid>
-                <Grid item xs={8}>
-                  <TextField
-                    variant='outlined'
-                    label='Preço'
-                    type='number'
-                    value={val_unit}
-                    onChange={this.handleChange('val_unit')}
-                    className={classes.textField}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={8}>
-                  <TextField
-                    variant='outlined'
-                    label='Quantidade'
-                    type='number'
-                    value={disp}
-                    onChange={this.handleChange('disp')}
-                    className={classes.textField}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </MyCard>
+
+          {
+            progress === 0 ?
+              (<AddCard
+                imageFile={imageFile}
+                nome={nome}
+                val_unit={val_unit}
+                disp={disp}
+                handleChangeImage={this.handleChangeImage}
+                handleChange={this.handleChange}
+                save={this.save}
+                clear={this.clear}
+              />) : (progress === 100 ?
+                (<AddedCard
+                  avatar={imageFile}
+                  nome={nome}
+                  val_unit={val_unit}
+                  disp={disp}
+                  back={this.clear}
+                />) :
+                (<CircularDeterminate value={progress} />)
+              )
+          }
         </Grid>
       </Grid>
     )
   }
 }
 
-AddProduct.propTypes = {
-  classes: PropTypes.object.isRequired
-}
-
-export default withStyles(styles)(AddProduct)
+export default AddProduct
