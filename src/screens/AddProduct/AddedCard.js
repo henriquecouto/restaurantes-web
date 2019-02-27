@@ -12,7 +12,6 @@ import {
   Avatar,
   Divider
 } from '@material-ui/core';
-import { Save, AddAPhoto, Delete } from '@material-ui/icons';
 import { withStyles } from '@material-ui/core/styles'
 
 import MyCard from '../../components/Card'

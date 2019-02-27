@@ -55,6 +55,16 @@ class Pedido extends Component {
             </Grid>
             <Grid item>
               <Grid container alignItems='center'>
+                {item.status === 'aguardando' && <Tooltip title='Marcar como: Preparando' placement='top'>
+                  <IconButton color='primary' onClick={this.modify('preparando')}>
+                    <RestaurantMenu />
+                  </IconButton>
+                </Tooltip>}
+                {item.status === 'preparando' && <Tooltip title='Marcar como: Entregue' placement='top'>
+                  <IconButton color='primary' onClick={this.modify('entregue')}>
+                    <DoneAll />
+                  </IconButton>
+                </Tooltip>}
                 <div
                   className={
                     item.status === 'entregue'
@@ -65,16 +75,6 @@ class Pedido extends Component {
                   <strong>Situação: </strong>
                   {item.status}
                 </div>
-                <Tooltip title='Marcar como: Preparando' placement='top'>
-                  <IconButton onClick={this.modify('preparando')}>
-                    <RestaurantMenu />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title='Marcar como: Entregue' placement='top'>
-                  <IconButton onClick={this.modify('entregue')}>
-                    <DoneAll />
-                  </IconButton>
-                </Tooltip>
               </Grid>
             </Grid>
           </Grid>
