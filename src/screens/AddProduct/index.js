@@ -31,8 +31,14 @@ class AddProduct extends Component {
     this._isMounted = false
   }
 
-  clear = () =>{
+  clear = () => {
     this.setState(INITIAL_STATE)
+  }
+
+  clearImage = () => {
+    this.setState({
+      imageFile: null
+    })
   }
 
   save = async () => {
@@ -114,6 +120,7 @@ class AddProduct extends Component {
                 handleChange={this.handleChange}
                 save={this.save}
                 clear={this.clear}
+                clearImage={this.clearImage}
               />) : (progress === 100 ?
                 (<AddedCard
                   avatar={imageFile}

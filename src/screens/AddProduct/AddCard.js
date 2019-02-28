@@ -58,6 +58,7 @@ class AddCard extends Component {
       handleChange,
       save,
       clear,
+      clearImage,
     } = this.props
     return (
       <MyCard type='determinateLarge'>
@@ -101,7 +102,7 @@ class AddCard extends Component {
               {
                 imageFile &&
                 <Tooltip title='Remover'>
-                  <IconButton color='secondary' onClick={() => this.setState({ imageFile: null })}>
+                  <IconButton color='secondary' onClick={clearImage}>
                     <Delete />
                   </IconButton>
                 </Tooltip>
