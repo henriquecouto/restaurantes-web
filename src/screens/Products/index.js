@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, Button, Divider, Fab } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 
 import Product from '../../components/Product'
 import { CircularIndeterminate } from '../../components/Progress'
@@ -51,6 +52,10 @@ class Home extends Component {
           </Grid>
         ) : (
             <>
+              <Divider style={{
+                marginTop: 10,
+                marginBottom: 10,
+              }} />
               <Grid container spacing={24}>
                 {result.map(produto => (
                   <Grid item key={produto._id}>

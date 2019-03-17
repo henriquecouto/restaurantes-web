@@ -10,7 +10,9 @@ import {
   ListItemIcon,
   ListItemText,
   Hidden,
-  SwipeableDrawer
+  SwipeableDrawer,
+  Fab,
+  Grid
 } from '@material-ui/core'
 import {
   ListAlt,
@@ -42,7 +44,6 @@ const styles = theme => ({
 const menuItems = [
   { name: 'Pedidos', path: '/', icon: <ListAlt /> },
   { name: 'Produtos', path: '/produtos', icon: <ViewList /> },
-  { name: 'Novo Produto', path: '/adicionar-produto', icon: <Add /> },
 ]
 
 class MyDrawer extends Component {

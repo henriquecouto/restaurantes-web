@@ -20,11 +20,13 @@ const theme = createMuiTheme({
       main: '#212121',
       light: '#484848',
       dark: '#000000',
+      contrastText: '#fff',
     },
     secondary: {
       main: '#ff3d00',
       light: '#ff7539',
       dark: '#c30000',
+      contrastText: '#fff',
     },
     textPrimary: { main: '#fff' },
     success: green[500],
@@ -93,7 +95,7 @@ class App extends Component {
                 <Header title='Nome do Restaurante'>
                   <Route exact path='/' render={props => <Home {...props} />} />
                   <Route exact path='/produtos' render={props => <Products {...props} />} />
-                  <Route exact path='/adicionar-produto' render={props => <AddProduct {...props} />} />
+                  <Route exact path='/produtos/adicionar' render={props => <AddProduct {...props} />} />
                 </Header>
               )}
           </MuiThemeProvider>

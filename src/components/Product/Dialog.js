@@ -90,13 +90,13 @@ class FullScreenDialog extends React.Component {
 
   handleChange = name => (event) => {
     this.setState({
-      [name]: event.target.value,
+      [name]: String(event.target.value),
     })
   }
 
   handleFloat = name => (event) => {
     this.setState({
-      [name]: parseFloat(event.target.value),
+      [name]: String(event.target.value),
     })
   }
 

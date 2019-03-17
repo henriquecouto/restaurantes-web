@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, IconButton, Typography, Button, Hidden } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton, Typography, Button, Hidden, Fab, Tooltip } from '@material-ui/core'
 
-import { Menu as MenuIcon, } from '@material-ui/icons'
+import {Link } from 'react-router-dom'
+
+import { Menu as MenuIcon, Add, } from '@material-ui/icons'
 
 import Menu from './Menu'
 
-const {logout} = require('../../api')
+const { logout } = require('../../api')
 
 const styles = theme => ({
   root: {
@@ -38,32 +40,39 @@ class Header extends Component {
   }
 
   render() {
-    const {classes, title, children} = this.props
-    const {drawer} = this.state
+    const { classes, title, children } = this.props
+    const { drawer } = this.state
 
     return (
-      <div className={ classes.root }>
-        <AppBar position='fixed' className={ classes.appBar }>
+      <div className={classes.root}>
+        <AppBar position='fixed' className={classes.appBar}>
           <Toolbar>
-            <Hidden only={ ['lg', 'md', 'xl'] }>
+            <Hidden only={['lg', 'md', 'xl']}>
               <IconButton
-                className={ classes.menuButton }
+                className={classes.menuButton}
                 color='inherit'
                 aria-label='Menu'
-                onClick={ this.toggleDrawer(true) }
+                onClick={this.toggleDrawer(true)}
               >
                 <MenuIcon />
               </IconButton>
             </Hidden>
-            <Typography variant='h6' color='inherit' className={ classes.grow }>
-              { title }
+            <Typography variant='h6' color='inherit' className={classes.grow}>
+              {title}
             </Typography>
-            <Button color='inherit' onClick={ logout }>
-              Sair
-            </Button>
+            <>
+              <Tooltip title='Adicionar Produto' >
+                <IconButton color='inherit' component={Link} to='/produtos/adicionar' >
+                  <Add />
+                </IconButton>
+              </Tooltip>
+              <Button color='inherit' onClick={logout}>
+                Sair
+              </Button>
+            </>
           </Toolbar>
         </AppBar>
-        <Menu children={ children } open={ drawer } toggleDrawer={ this.toggleDrawer } />
+        <Menu children={children} open={drawer} toggleDrawer={this.toggleDrawer} />
       </div>
     )
   }
