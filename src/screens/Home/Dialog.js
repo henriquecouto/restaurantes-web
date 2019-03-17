@@ -25,7 +25,10 @@ const styles = theme => ({
     flex: 1,
   },
   grid: {
-    padding: theme.spacing.unit*2
+    padding: theme.spacing.unit * 2
+  },
+  item: {
+    marginTop: theme.spacing.unit * 2
   },
 });
 
@@ -37,20 +40,20 @@ class FullScreenDialog extends React.Component {
 
   finalize = () => {
     console.log(this.props.pedido.id)
-    updateData('pedidos', this.props.pedido.id, {finalizado: true})
+    updateData('pedidos', this.props.pedido.id, { finalizado: true })
     this.props.onClose()
   }
 
   modifyItem = (update, position) => {
     const newItens = this.props.pedido.itens
     newItens[position] = update
-    updateData('pedidos', this.props.pedido.id, {itens: newItens})
+    updateData('pedidos', this.props.pedido.id, { itens: newItens })
   }
 
   render() {
     const { classes, open, onClose, pedido } = this.props;
     return (
-      <div>
+      <>
         <Dialog
           fullScreen
           open={open}
@@ -72,19 +75,19 @@ class FullScreenDialog extends React.Component {
               </Button>
             </Toolbar>
           </AppBar>
-          <Grid container spacing={24} className={classes.grid}>
-          {
-            pedido.itens.map((item, key) => {
-              return (
-                <Grid item xs={12} key={key}>
-                  <Item item={item} position={key} modify={this.modifyItem}/>
-                </Grid>
-              )
-            })
-          } 
+          <Grid container direction='column' className={classes.grid}>
+            {
+              pedido.itens.map((item, key) => {
+                return (
+                  <Grid item key={key} className={classes.item}>
+                    <Item item={item} position={key} modify={this.modifyItem} />
+                  </Grid>
+                )
+              })
+            }
           </Grid>
         </Dialog>
-      </div>
+      </>
     );
   }
 }
