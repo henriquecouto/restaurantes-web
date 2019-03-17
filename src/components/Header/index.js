@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import { AppBar, Toolbar, IconButton, Typography, Button, Hidden, Fab, Tooltip } from '@material-ui/core'
 
-import {Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-import { Menu as MenuIcon, Add, } from '@material-ui/icons'
+import { Menu as MenuIcon, Add, ExitToApp, } from '@material-ui/icons'
 
 import Menu from './Menu'
 
@@ -66,9 +66,11 @@ class Header extends Component {
                   <Add />
                 </IconButton>
               </Tooltip>
-              <Button color='inherit' onClick={logout}>
-                Sair
-              </Button>
+              <Tooltip title='Sair' >
+                <IconButton color='inherit' onClick={logout}>
+                  <ExitToApp />
+                </IconButton>
+              </Tooltip>
             </>
           </Toolbar>
         </AppBar>
