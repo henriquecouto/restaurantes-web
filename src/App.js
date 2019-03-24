@@ -10,8 +10,9 @@ import Login from './screens/Login'
 import Home from './screens/Home'
 import Products from './screens/Products'
 import AddProduct from './screens/AddProduct'
+import ForgotPass from './screens/ForgotPass'
 
-import { login, isLogged } from './api'
+import { login, isLogged, recoverPass } from './api'
 import Header from './components/Header'
 
 const theme = createMuiTheme({
@@ -38,8 +39,21 @@ const theme = createMuiTheme({
 
 class App extends Component {
   state = {
+    position: 'login',
     loading: false,
     authError: '',
+    recoverError: '',
+    recoverSuccess: false,
+  }
+
+  changePosition = position => {
+    this.setState({ 
+      position,
+      loading: false,
+      authError: '',
+      recoverError: '',
+      recoverSuccess: false,
+    })
   }
 
   login = async (email, passwd) => {
@@ -76,8 +90,28 @@ class App extends Component {
     auth.signOut()
   }
 
+  recoverPass = async (email) => {
+    this.setState({
+      loading: true,
+    })
+    try {
+      await recoverPass(email)
+      this.setState({
+        recoverError: '',
+        recoverSuccess: true,
+      })
+    } catch (err) {
+      this.setState({
+        recoverError: err.code,
+      })
+    }
+    this.setState({
+      loading: false,
+    })
+  }
+
   render() {
-    const { loading, authError } = this.state
+    const { loading, authError, recoverError, recoverSuccess, position } = this.state
     const isAuth = Number(window.localStorage.getItem('isAuth'))
     return (
       <Router>
@@ -85,12 +119,26 @@ class App extends Component {
           <CssBaseline />
           <MuiThemeProvider theme={theme}>
             {!isAuth ? (
-              <Route
-                path='/'
-                render={props => (
-                  <Login {...props} login={this.login} authError={authError} loading={loading} />
+              <>
+                <Route path='/recuperar-senha' render={props => (
+                  <ForgotPass
+                    {...props}
+                    changePosition={this.changePosition}
+                    recoverPass={this.recoverPass}
+                    loading={loading}
+                    recoverError={recoverError}
+                    recoverSuccess={recoverSuccess}
+                  />
                 )}
-              />
+                />
+                <Route
+                  exact={position === 'recover'}
+                  path='/'
+                  render={props => (
+                    <Login {...props} changePosition={this.changePosition} login={this.login} authError={authError} loading={loading} />
+                  )}
+                />
+              </>
             ) : (
                 <Header title='Nome do Restaurante'>
                   <Route exact path='/' render={props => <Home {...props} />} />

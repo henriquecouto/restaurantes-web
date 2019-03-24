@@ -9,6 +9,7 @@ export const logout = () => {
 // auth
 export const login = (email, passwd) => auth.signInWithEmailAndPassword(email, passwd)
 export const isLogged = callback => auth.onAuthStateChanged(callback)
+export const recoverPass = email => auth.sendPasswordResetEmail(email)
 
 // database
 export const loadData = collection => db.collection(collection)

@@ -13,7 +13,6 @@ const styles = theme => ({
     marginLeft: -12,
   },
   wrapper: {
-    margin: theme.spacing.unit,
     position: 'relative',
   },
 })

@@ -101,8 +101,8 @@ class Home extends Component {
                   </Grid>
                 ))}
                 <Grid item>
-                    <Button onClick={this.previous} style={{marginRight: 8}}>Voltar</Button>
-                    <Button variant='contained' color='secondary' onClick={this.next}>Avançar</Button>
+                  <Button onClick={this.previous} style={{marginRight: 8}}>Voltar</Button>
+                  <Button variant='contained' color='secondary' onClick={this.next}>Avançar</Button>
                 </Grid>
               </Grid>
             </>

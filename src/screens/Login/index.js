@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import {
@@ -9,6 +10,7 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Typography,
 } from '@material-ui/core'
 
 import { Visibility, VisibilityOff } from '@material-ui/icons'
@@ -55,6 +57,10 @@ class Login extends Component {
     showPassword: false,
   }
 
+  componentDidMount = () => {
+    this.props.changePosition('login')
+  }
+
   handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
@@ -90,8 +96,11 @@ class Login extends Component {
           <Grid item>
             <Paper className={classes.paper}>
               <Grid container direction='column' alignItems='center' className={classes.container}>
-                <Grid item xs={12}>
+                <Grid item xs>
                   <h1>LOGO</h1>
+                </Grid>
+                <Grid item xs>
+                  <Typography variant='subtitle1'>Insira seu e-mail e sua senha para entrar</Typography>
                 </Grid>
                 <Grid item xs>
                   <Divider />
@@ -154,7 +163,11 @@ class Login extends Component {
                   alignItems='center'
                   className={classes.button}
                 >
-                  <Button color='secondary'>Esqueci a senha</Button>
+                  <Button
+                    color='secondary'
+                    component={Link}
+                    to='/recuperar-senha'
+                  >Esqueci a senha</Button>
                   <ButtonProgress
                     variant='contained'
                     color='primary'
