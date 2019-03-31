@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
-import { Grid, Button, Divider, Fab } from '@material-ui/core'
-import { Link } from 'react-router-dom'
+import { Grid, Button, Divider } from '@material-ui/core'
 
 import Product from '../../components/Product'
 import { CircularIndeterminate } from '../../components/Progress'
 
 import { loadData } from '../../api'
 
-const limit = 9
-
 class Home extends Component {
+
+  limit = 9
+
   state = {
     result: [],
     openDialog: false,
@@ -21,7 +21,7 @@ class Home extends Component {
     this._isMounted = true
     loadData('estoque')
       .orderBy('nome', 'asc')
-      .limit(limit)
+      .limit(this.limit)
       .onSnapshot((snapshot) => {
         if (this._isMounted && snapshot.docs[0]) {
           const result = []
@@ -49,7 +49,7 @@ class Home extends Component {
     loadData('estoque')
       .orderBy('nome', 'asc')
       .startAfter(result[result.length - 1].nome)
-      .limit(limit)
+      .limit(this.limit)
       .onSnapshot((snapshot) => {
         if (this._isMounted && snapshot.docs[0]) {
           const result = []
@@ -65,7 +65,7 @@ class Home extends Component {
     loadData('estoque')
       .orderBy('nome', 'desc')
       .startAfter(result[0].nome)
-      .limit(limit)
+      .limit(this.limit)
       .onSnapshot((snapshot) => {
         if (this._isMounted && snapshot.docs[0]) {
           const result = []
@@ -100,8 +100,13 @@ class Home extends Component {
                     <Product produto={produto} />
                   </Grid>
                 ))}
+              </Grid>
+              <Grid container style={{
+                marginTop: 10,
+                marginBottom: 10,
+              }}>
                 <Grid item>
-                  <Button onClick={this.previous} style={{marginRight: 8}}>Voltar</Button>
+                  <Button onClick={this.previous} style={{ marginRight: 8 }}>Voltar</Button>
                   <Button variant='contained' color='secondary' onClick={this.next}>Avançar</Button>
                 </Grid>
               </Grid>

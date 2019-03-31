@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid, Paper, Divider, TextField, Button, Typography, Icon } from '@material-ui/core';
+import { Grid, Paper, Divider, TextField, Button, Typography } from '@material-ui/core';
 
 import { LinearIndeterminate, ButtonProgress } from '../../components/Progress';
 import mail from '../../assets/mail.svg';
@@ -56,7 +56,7 @@ class ForgotPass extends Component {
   }
 
   render() {
-    const { classes, loading, recoverError, recoverPass, recoverSuccess} = this.props
+    const { classes, loading, recoverError, recoverPass, recoverSuccess } = this.props
     const { email } = this.state
     const errorMessages = {
       'auth/user-not-found': 'E-mail não cadastrado!',
@@ -85,7 +85,7 @@ class ForgotPass extends Component {
                       <Divider />
                     </Grid>
                     <Grid item>
-                      <img src={mail} style={{ width: 70 }} />
+                      <img src={mail} alt='Ícone de email' style={{ width: 70 }} />
                     </Grid>
                     <Grid item>
                       <Typography variant='h6'>Verifique sua caixa de e-mail para recuperar a senha</Typography>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, IconButton, Typography, Button, Hidden, Fab, Tooltip } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton, Typography, Hidden, Tooltip } from '@material-ui/core'
 
 import { Link } from 'react-router-dom'
 
