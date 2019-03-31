@@ -8,12 +8,60 @@ import { loadData } from '../../api'
 
 class Home extends Component {
 
-  limit = 9
+  limit = 10
 
   state = {
     result: [],
     openDialog: false,
     loading: false,
+    haveNext: true,
+    havePrev: false,
+  }
+
+  next = () => {
+    this.setState({ loading: true, result: [] })
+    const result = this.state.result
+    loadData('estoque')
+      .orderBy('nome', 'asc')
+      .startAfter(result[result.length - 1].nome)
+      .limit(this.limit)
+      .onSnapshot((snapshot) => {
+        if (this._isMounted && snapshot.docs[0]) {
+          const result = []
+          let haveNext = false
+          snapshot.docs.forEach((doc, key) => {
+            if (key < this.limit - 1) {
+              result.push({ ...doc.data(), _id: doc.id })
+            } else {
+              haveNext = true
+            }
+          })
+          this.setState({ result, loading: false, haveNext, havePrev: true })
+        }
+      })
+  }
+  previous = () => {
+    this.setState({ loading: true, result: [] })
+    const result = this.state.result
+    loadData('estoque')
+      .orderBy('nome', 'desc')
+      .startAfter(result[0].nome)
+      .limit(this.limit)
+      .onSnapshot((snapshot) => {
+        if (this._isMounted && snapshot.docs[0]) {
+          const result = []
+          let havePrev = false
+          snapshot.docs.forEach((doc, key) => {
+            if (key < this.limit - 1) {
+              result.push({ ...doc.data(), _id: doc.id })
+            } else {
+              havePrev = true
+            }
+          })
+          result.reverse()
+          this.setState({ result, loading: false, haveNext: true, havePrev })
+        }
+      })
   }
 
   componentDidMount() {
@@ -25,10 +73,15 @@ class Home extends Component {
       .onSnapshot((snapshot) => {
         if (this._isMounted && snapshot.docs[0]) {
           const result = []
-          snapshot.docs.forEach((doc) => {
-            result.push({ ...doc.data(), _id: doc.id })
+          let haveNext = false
+          snapshot.docs.forEach((doc, key) => {
+            if (key < this.limit - 1) {
+              result.push({ ...doc.data(), _id: doc.id })
+            } else {
+              haveNext = true
+            }
           })
-          this.setState({ result, loading: false })
+          this.setState({ result, loading: false, haveNext })
         }
       })
   }
@@ -43,43 +96,10 @@ class Home extends Component {
     }))
   }
 
-  next = () => {
-    const result = this.state.result
 
-    loadData('estoque')
-      .orderBy('nome', 'asc')
-      .startAfter(result[result.length - 1].nome)
-      .limit(this.limit)
-      .onSnapshot((snapshot) => {
-        if (this._isMounted && snapshot.docs[0]) {
-          const result = []
-          snapshot.docs.forEach((doc) => {
-            result.push({ ...doc.data(), _id: doc.id })
-          })
-          this.setState({ result, loading: false })
-        }
-      })
-  }
-  previous = () => {
-    const result = this.state.result
-    loadData('estoque')
-      .orderBy('nome', 'desc')
-      .startAfter(result[0].nome)
-      .limit(this.limit)
-      .onSnapshot((snapshot) => {
-        if (this._isMounted && snapshot.docs[0]) {
-          const result = []
-          snapshot.docs.forEach((doc) => {
-            result.push({ ...doc.data(), _id: doc.id })
-          })
-          result.reverse()
-          this.setState({ result, loading: false })
-        }
-      })
-  }
 
   render() {
-    const { result, loading } = this.state
+    const { result, loading, haveNext, havePrev } = this.state
     return (
       <>
         {loading ? (
@@ -106,8 +126,8 @@ class Home extends Component {
                 marginBottom: 10,
               }}>
                 <Grid item>
-                  <Button onClick={this.previous} style={{ marginRight: 8 }}>Voltar</Button>
-                  <Button variant='contained' color='secondary' onClick={this.next}>Avançar</Button>
+                  <Button disabled={!havePrev} onClick={this.previous} style={{ marginRight: 8 }}>Voltar</Button>
+                  <Button disabled={!haveNext} variant='contained' color='secondary' onClick={this.next}>Avançar</Button>
                 </Grid>
               </Grid>
             </>
