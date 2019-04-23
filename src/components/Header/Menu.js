@@ -15,6 +15,9 @@ import {
 import {
   ListAlt,
   ViewList,
+  PlaylistAddCheck,
+  DoneAll,
+  Folder,
 } from '@material-ui/icons'
 
 
@@ -39,8 +42,9 @@ const styles = theme => ({
 })
 
 const menuItems = [
-  { name: 'Pedidos', path: '/', icon: <ListAlt /> },
-  { name: 'Produtos', path: '/produtos', icon: <ViewList /> },
+  { name: 'Pedidos Abertos', path: '/', icon: <ListAlt /> },
+  { name: 'Pedidos Fechados', path: '/pedidos-fechados', icon: <DoneAll /> },
+  { name: 'Produtos', path: '/produtos', icon: <Folder /> },
 ]
 
 class MyDrawer extends Component {
