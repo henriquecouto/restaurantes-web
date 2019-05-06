@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 
-import { Grid, Button, Divider, Input, TextField, Typography, FormControl, Select, MenuItem, OutlinedInput, Paper, InputBase, IconButton } from '@material-ui/core'
+import { Grid, Button, Divider, Input, TextField, Typography, FormControl, Select, MenuItem, OutlinedInput, Paper, InputBase, IconButton, Hidden } from '@material-ui/core'
 
 import Product from '../../components/Product'
 import { CircularIndeterminate } from '../../components/Progress'
@@ -11,12 +11,14 @@ import { loadData } from '../../api'
 import { Search } from '@material-ui/icons';
 
 const styles = theme => ({
-  search: {
+  paper: {
     padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     minWidth: 200,
-    maxWidth: 400,
+    maxWidth: '100%',
+    height: '100%',
   },
   input: {
     marginLeft: 8,
@@ -24,6 +26,16 @@ const styles = theme => ({
   },
   iconButton: {
     padding: 10,
+  },
+  navigation: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  [theme.breakpoints.down('md')]: {
+    navigation: {
+      flexDirection: 'column'
+    }
   }
 })
 
@@ -33,8 +45,9 @@ class Home extends Component {
     result: [],
     openDialog: false,
     loading: false,
-    haveNext: true,
+    haveNext: false,
     havePrev: false,
+    number: 0
   }
 
   next = () => {
@@ -117,7 +130,7 @@ class Home extends Component {
   }
 
   render() {
-    const { result, loading, haveNext, havePrev } = this.state
+    const { result, loading, haveNext, havePrev, number } = this.state
     const { classes } = this.props
     return (
       <>
@@ -131,17 +144,42 @@ class Home extends Component {
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Grid container direction='column' spacing={24} style={{ maxWidth: 1300 }}>
                 <Grid item>
-                  <Grid container justify='space-between' alignItems='center'>
-                    <Button disabled={!havePrev} color='secondary' onClick={this.previous} style={{ marginRight: 8 }}>Voltar</Button>
-                    <Typography>___ produtos cadastrados</Typography>
-                    <Paper className={classes.search} elevation={1}>
-                      <InputBase className={classes.input} placeholder="Procurar produto" />
-                      <IconButton className={classes.iconButton} aria-label="Search">
-                        <Search />
-                      </IconButton>
-                    </Paper>
-                    <Button disabled={!haveNext} variant='contained' color='secondary' onClick={this.next}>Avançar</Button>
-                  </Grid>
+                  <Hidden mdDown>
+                    <Grid container spacing={8} className={classes.navigation}>
+                      <Button disabled={!havePrev} color='secondary' onClick={this.previous}>Voltar</Button>
+                      <Typography>{number} produtos cadastrados</Typography>
+                      <Paper className={classes.paper} elevation={1}>
+                        <InputBase className={classes.input} placeholder="Procurar produto" />
+                        <IconButton className={classes.iconButton} aria-label="Search">
+                          <Search />
+                        </IconButton>
+                      </Paper>
+                      <Button disabled={!haveNext} variant='contained' color='secondary' onClick={this.next}>Avançar</Button>
+                    </Grid>
+                  </Hidden>
+                  <Hidden lgUp>
+                    <Grid container spacing={8} className={classes.navigation}>
+                      <Grid item style={{ width: '100%' }}>
+                        <Grid container justify='space-between' >
+                          <Button disabled={!havePrev} color='secondary' onClick={this.previous}>Voltar</Button>
+                          <Button disabled={!haveNext} variant='contained' color='secondary' onClick={this.next}>Avançar</Button>
+                        </Grid>
+                      </Grid>
+                      <Grid item style={{ width: '100%', height: 50 }}>
+                        <Paper className={classes.paper}>
+                          <Typography>{number} produtos cadastrados</Typography>
+                        </Paper>
+                      </Grid>
+                      <Grid item style={{ width: '100%' }}>
+                        <Paper className={classes.paper} elevation={1}>
+                          <InputBase className={classes.input} placeholder="Procurar produto" />
+                          <IconButton className={classes.iconButton} aria-label="Search">
+                            <Search />
+                          </IconButton>
+                        </Paper>
+                      </Grid>
+                    </Grid>
+                  </Hidden>
                 </Grid>
                 <Grid item>
                   <Divider />
